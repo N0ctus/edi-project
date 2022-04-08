@@ -19,7 +19,11 @@
   "homepage": "https://github.com/N0ctus/edi-project#readme",
   "dependencies": {
     "dotenv": "^16.0.0",
+    "ejs": "^3.1.6",
     "express": "^4.17.3",
-    "mongodb": "^4.4.1"
+    "express-session": "^1.17.2",
+    "mongodb": "^4.4.1",
+    "passport": "^0.5.2",
+    "passport-openidconnect": "^0.1.1"
   }
 }
