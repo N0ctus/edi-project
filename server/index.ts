@@ -32,7 +32,7 @@ passport.use('oidc', new Strategy({
   userInfoURL: process.env.USER_INFO_URL,
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: 'http://localhost:8080/authorization-code/callback',
+  callbackURL: process.env.CALLBACK_URL,
   scope: 'openid profile'
 }, (issuer, profile, done) => {
   return done(null, profile);
