@@ -1,24 +1,13 @@
-const MongoClient = require('mongodb').MongoClient;
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const session = require('express-session');
-const passport = require('passport');
-const { Strategy } = require('passport-openidconnect');
-require('dotenv').config({
+import express from "express";
+import passport from "passport";
+import path from "path";
+import session from "express-session";
+import { Strategy } from "passport-openidconnect";
+import "./mongodb";
+import dotenv from 'dotenv';
+
+dotenv.config({
   path: `${__dirname}\\..\\.env`
-});
-
-MongoClient.connect(`${process.env.DB_CONNECT}/edi_db`, (err, client) => {
-  if (err) throw err
-
-  const db = client.db('edi_db')
-
-  db.collection('edi_db').find().toArray((err, result) => {
-    if (err) throw err
-
-    console.log(`aaa`, result)
-  })
 });
 
 const app = express();
@@ -74,8 +63,9 @@ app.use('/profile', ensureLoggedIn, (req, res) => {
 
 app.get('/logout', (req, res) => {
   req.logout();
-  req.session.destroy();
-  res.redirect('/');
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
 });
 
 function ensureLoggedIn(req, res, next) {
