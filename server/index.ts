@@ -6,25 +6,30 @@ import { Strategy } from "passport-openidconnect";
 import "./mongodb";
 import dotenv from 'dotenv';
 
+// Get the environnement configuration
 dotenv.config({
   path: `${__dirname}\\..\\.env`
 });
 
 const app = express();
 
+// Setup the rendering engine to use EJS templates
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
+// Configure the client/server session secret
 app.use(session({
-  secret: 'MyVoiceIsMyPassportVerifyMe',
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true
 }));
 
+// Use passport and session
 app.use(passport.initialize());
 app.use(passport.session());
 
 // set up passport
+// Open ID Connect protocol
 passport.use('oidc', new Strategy({
   issuer: process.env.ISSUER,
   authorizationURL: process.env.AUTHORIZATION_URL,
@@ -38,6 +43,7 @@ passport.use('oidc', new Strategy({
   return done(null, profile);
 }));
 
+// Tell oidc provider to serialize the user info
 passport.serializeUser((user, next) => {
   next(null, user);
 });
@@ -58,7 +64,7 @@ app.use('/authorization-code/callback',
 );
 
 app.use('/profile', ensureLoggedIn, (req, res) => {
-  res.render('profile.ejs', { title: 'Profile', user: req.user });
+  res.render('profile.ejs', { title: `Profile of ${req.user['displayName']}`, user: req.user });
 });
 
 app.get('/logout', (req, res) => {
