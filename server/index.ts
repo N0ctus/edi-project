@@ -1,90 +1,59 @@
-import express from "express";
-import passport from "passport";
-import path from "path";
-import session from "express-session";
-import { Strategy } from "passport-openidconnect";
-import "./mongodb";
-import dotenv from 'dotenv';
+const express = require('express'); // server software
+const bodyParser = require('body-parser'); // parser middleware
+const session = require('express-session');  // session middleware
+const passport = require('passport');  // authentication
+const connectEnsureLogin = require('connect-ensure-login');// authorization
+const cors = require('cors');
 
-// Get the environnement configuration
-dotenv.config({
-  path: `${__dirname}\\..\\.env`
-});
+const userData = require('./user.ts'); // User Model
 
 const app = express();
 
-// Setup the rendering engine to use EJS templates
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-
-// Configure the client/server session secret
+// Configure Sessions Middleware
 app.use(session({
-  secret: process.env.SECRET,
+  secret: 'r8q,+&1LM3)CD*zAGpx1xm{NeQhc;#',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
 }));
 
-// Use passport and session
+// Configure More Middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors());
 
-// set up passport
-// Open ID Connect protocol
-passport.use('oidc', new Strategy({
-  issuer: process.env.ISSUER,
-  authorizationURL: process.env.AUTHORIZATION_URL,
-  tokenURL: process.env.TOKEN_URL,
-  userInfoURL: process.env.USER_INFO_URL,
-  clientID: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: process.env.CALLBACK_URL,
-  scope: 'openid profile'
-}, (issuer, profile, done) => {
-  return done(null, profile);
-}));
+console.log(userData);
 
-// Tell oidc provider to serialize the user info
-passport.serializeUser((user, next) => {
-  next(null, user);
+// Passport Local Strategy
+passport.use(userData.createStrategy());
+
+// To use with sessions
+passport.serializeUser(userData.serializeUser());
+passport.deserializeUser(userData.deserializeUser());
+
+app.get('/dashboard', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  res.send(`Hello ${req.user.username}. Your session ID is ${req.sessionID}
+   and your session expires in ${req.session.cookie.maxAge}
+   milliseconds.<br><br>
+   <a href="/logout">Log Out</a><br><br>
+   <a href="/secret">Members Only</a>`);
 });
 
-passport.deserializeUser((obj, next) => {
-  next(null, obj);
-});
-
-const port = process.env.PORT || 8080;
-
-app.use('/login', passport.authenticate('oidc'));
-
-app.use('/authorization-code/callback',
-  passport.authenticate('oidc', { failureRedirect: '/error' }),
-  (req, res) => {
-    res.redirect('/profile');
-  }
-);
-
-app.use('/profile', ensureLoggedIn, (req, res) => {
-  res.render('profile.ejs', { title: `Profile of ${req.user['displayName']}`, user: req.user });
-});
-
-app.get('/logout', (req, res) => {
+app.get('/logout', function(req, res) {
   req.logout();
-  req.session.destroy(() => {
-    res.redirect('/');
-  });
+  res.json('ok')
 });
 
-function ensureLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-
-  res.redirect('/login')
-}
-
-app.get('/', function(req, res) {
-  res.render('index.ejs', { title: 'Home' });
+app.post('/login', passport.authenticate('local'),  function(req, res) {
+  console.log(req.user)
+  res.json(req.user)
 });
 
-app.listen(port);
-console.log(`Server started at ${process.env.LISTEN_URL}:${port}`);
+app.get('/esseh', (req, res) => {
+  console.log('esseh');
+  res.json('esseh');
+});
+
+const port = 3000;
+app.listen(port, () => console.log(`This app is listening on port ${port}`));
