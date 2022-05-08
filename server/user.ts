@@ -1,13 +1,13 @@
 // dependencies
-const mongoose = require('mongoose');
-const passportLocalMongoose = require('passport-local-mongoose');
-// connect to database
-mongoose.connect('mongodb://0.0.0.0:27017/edi_db',{
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+import { connect, Schema, model, PassportLocalModel, PassportLocalDocument } from 'mongoose';
+import passportLocalMongoose from 'passport-local-mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config({
+  path: `${__dirname}/../.env`
 });
-// Create Model
-const Schema = mongoose.Schema;
+
+connect(`${process.env["DB_CONNECT"]}/edi_db`);
 
 const User = new Schema({
   username: String,
@@ -16,4 +16,6 @@ const User = new Schema({
 // Export Model
 User.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('userData', User, 'userData');
+const UserModel = model('userData', User, 'userData') as PassportLocalModel<PassportLocalDocument>;
+
+export default UserModel;

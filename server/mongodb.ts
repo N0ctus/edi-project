@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 
 dotenv.config({
-  path: `${__dirname}\\..\\.env`
+  path: `${__dirname}/../.env`
 });
 
 MongoClient.connect(`${process.env["DB_CONNECT"]}/edi_db`, (err, client) => {
