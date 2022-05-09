@@ -7,7 +7,7 @@ dotenv.config({
   path: `${__dirname}/../.env`
 });
 
-connect(`${process.env["DB_CONNECT"]}/edi_db`);
+connect(`${process.env["DB_CONNECT"]}/EDI_DB`);
 
 const User = new Schema({
   username: String,

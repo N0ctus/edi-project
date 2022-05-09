@@ -1,4 +1,5 @@
-const UserDetails = require('./user');
+import UserModel from './user';
 
-UserDetails.register({ username: 'candy', active: false }, 'cane');
-UserDetails.register({ username: 'starbuck', active: false }, 'redeye');
+UserModel.register({ username: 'admin', active: false } as any, '1234');
+
+console.log('Dummy data created!');
