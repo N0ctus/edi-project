@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { NamePercentData } from 'src/app/models/NamePercentData.model';
 
 @Component({
   selector: 'app-card',
@@ -7,17 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CardComponent implements OnInit {
 
-  constructor() { }
-public title="Top custumers";
-public partnerList=[
-  {name:"vw",percent:50},
-  {name:"bmw",percent:20},
-  {name:"fiat",percent:10},
-  
+  @Input()
+  public title: string = '';
 
-];
+  @Input()
+  public namePercentData: NamePercentData[] = [];
+
+  constructor() { }
+
   ngOnInit(): void {
   }
-  
+
 
 }

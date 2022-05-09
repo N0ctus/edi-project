@@ -1,1 +1,7 @@
-<app-card></app-card>
+<div class="container-fluid mt-4">
+  <div class="row justify-items-start">
+    <app-card [title]="'Top customers'" [namePercentData]="partnerList"></app-card>
+    <app-card [title]="'Top suppliers'" [namePercentData]="topSuppliers"></app-card>
+    <app-card [title]="'Top JIS'" [namePercentData]="topJis"></app-card>
+  </div>
+</div>
