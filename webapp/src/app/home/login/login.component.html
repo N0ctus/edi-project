@@ -1,5 +1,29 @@
-<div>
-  <input type="email" [(ngModel)]="userEmail">
-  <input type="password" [(ngModel)]="userPassword">
-  <button (click)="login()">Login</button>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-4">
+      <div class="mb-3">
+        <label for="emailField" class="form-label">Username</label>
+        <input
+          type="text"
+          [(ngModel)]="userName"
+          class="form-control"
+          id="emailField"
+          placeholder="username"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="passwordField" class="form-label">Password</label>
+        <input
+          type="password"
+          [(ngModel)]="userPassword"
+          class="form-control"
+          id="passwordField"
+          placeholder="*********"
+        />
+      </div>
+      <div class="mb-3">
+        <button (click)="login()" class="btn btn-primary mb-3">Login</button>
+      </div>
+    </div>
+  </div>
 </div>

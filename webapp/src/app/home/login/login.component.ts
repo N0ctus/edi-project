@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/auth.service';
 })
 export class LoginComponent implements OnInit {
 
-  userEmail : string = '';
+  userName : string = '';
   userPassword : string = '';
 
   constructor(private authService : AuthService, private router : Router) { }
@@ -19,10 +19,8 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
-    this.authService.validate(this.userEmail, this.userPassword).subscribe(response => {
-      console.log(response);
-      this.authService.setUserInfo({'user' : response.user});
-      this.router.navigate(['home']);
+    this.authService.login(this.userName, this.userPassword).subscribe(() => {
+      this.router.navigate(['']);
     });
   }
 

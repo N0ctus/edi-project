@@ -11,4 +11,5 @@ export interface UserResponseAuth extends UserRequestAuth {
 export interface UserAuthResponse {
   user: UserResponseAuth;
   token: string;
+  expiresIn: number;
 }

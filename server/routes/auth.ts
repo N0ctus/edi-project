@@ -2,6 +2,11 @@ import { Router } from "express";
 import { sign } from 'jsonwebtoken';
 import passport from "passport";
 import UserModel from './../user';
+import dotenv from 'dotenv';
+
+dotenv.config({
+    path: `${__dirname}/../../.env`
+});
 
 passport.use(UserModel.createStrategy());
 
@@ -24,9 +29,10 @@ authRouter.post('/login', (req, res, next) => {
             if (err) {
                 res.send(err);
             }
-            // generate a signed son web token with the contents of user object and return it in the response
-            const token = sign(user.toJSON(), 'your_jwt_secret');
-            return res.json({ user, token });
+            const token = sign(user.toJSON(), `${process.env["SECRET"]}`, {
+                expiresIn: 120,
+            });
+            return res.json({ user, token, expiresIn: 120 });
         });
     })(req, res);
 });
