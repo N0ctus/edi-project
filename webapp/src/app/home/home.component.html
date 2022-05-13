@@ -1,7 +1,15 @@
 <div class="container-fluid mt-4">
   <div class="row justify-items-start">
-    <app-card [title]="'Top customers'" [namePercentData]="partnerList"></app-card>
-    <app-card [title]="'Top suppliers'" [namePercentData]="topSuppliers"></app-card>
-    <app-card [title]="'Top JIS'" [namePercentData]="topJis"></app-card>
+    <app-card class="col-3" [title]="'Top customers'" [namePercentData]="partnerList"></app-card>
+    <app-card class="col-3" [title]="'Top suppliers'" [namePercentData]="topSuppliers"></app-card>
+    <app-card class="col-3" [title]="'Top JIS'" [namePercentData]="topJis"></app-card>
+  </div>
+  <div class="row justify-items-start mt-4">
+    <app-chart-card class="col-8" [title]="'Transaction per type (Host/SAP)'" [chartOptions]="transactions"></app-chart-card>
+    <app-chart-card class="col-4" [title]="'Transaction per type (Host/SAP)'" [chartOptions]="topFilesExchange"></app-chart-card>
+  </div>
+  <div class="row justify-items-start mt-4">
+    <app-chart-card class="col-8" [title]="'Transaction per type (Host/SAP)'" [chartOptions]="errors"></app-chart-card>
+    <app-chart-card class="col-4" [title]="'Transaction per type (Host/SAP)'" [chartOptions]="topMessagesExchange"></app-chart-card>
   </div>
 </div>

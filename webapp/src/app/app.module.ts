@@ -11,6 +11,8 @@ import { LoginComponent } from './home/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { SidebarComponent } from './navigation/sidebar/sidebar.component';
 import { CardComponent } from './ui/card/card.component';
+import { ChartCardComponent } from './ui/chart-card/chart-card.component';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import { CardComponent } from './ui/card/card.component';
     HomeComponent,
     SidebarComponent,
     CardComponent,
+    ChartCardComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -27,6 +30,7 @@ import { CardComponent } from './ui/card/card.component';
     HttpClientModule,
     FlexLayoutModule,
     FormsModule,
+    HighchartsChartModule,
   ],
   bootstrap: [AppComponent]
 })

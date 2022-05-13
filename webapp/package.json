@@ -22,6 +22,8 @@
     "@angular/router": "~13.3.0",
     "@okta/okta-angular": "^5.2.0",
     "@okta/okta-auth-js": "^6.5.0",
+    "highcharts": "^10.1.0",
+    "highcharts-angular": "^3.0.0",
     "moment": "^2.29.3",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

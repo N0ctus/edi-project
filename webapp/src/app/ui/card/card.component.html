@@ -1,4 +1,4 @@
-<div class="card" style="width: 18rem">
+<template class="card m-auto">
   <div class="card-body">
     <h5 class="card-title">{{ title }}</h5>
     <div *ngFor="let partner of namePercentData">
@@ -11,11 +11,8 @@
           class="progress-bar"
           role="progressbar"
           [style.width]="partner.percent + '%'"
-          aria-valuenow="50"
-          aria-valuemin="0"
-          aria-valuemax="100"
         ></div>
       </div>
     </div>
   </div>
-</div>
+</template>
