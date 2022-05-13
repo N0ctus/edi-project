@@ -24,6 +24,7 @@
     "@okta/okta-auth-js": "^6.5.0",
     "highcharts": "^10.1.0",
     "highcharts-angular": "^3.0.0",
+    "material-icons": "^1.10.11",
     "moment": "^2.29.3",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
