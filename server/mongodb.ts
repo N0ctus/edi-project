@@ -5,7 +5,7 @@ dotenv.config({
   path: `${__dirname}/../.env`
 });
 
-MongoClient.connect(`${process.env["DB_CONNECT"]}/edi_db`, (err, client) => {
+MongoClient.connect(`${process.env["DB_CONNECT"]}/${process.env["DB_NAME"]}`, (err, client) => {
   if (err || !client) {
     throw err;
   }

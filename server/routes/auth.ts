@@ -3,6 +3,9 @@ import { sign } from 'jsonwebtoken';
 import passport from "passport";
 import UserModel from './../user';
 import dotenv from 'dotenv';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+
+const TOKEN_EXPIRATION = '2days';
 
 dotenv.config({
     path: `${__dirname}/../../.env`
@@ -13,6 +16,20 @@ passport.use(UserModel.createStrategy());
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
 
+passport.use(new Strategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: `${process.env["SECRET"]}`
+},
+    async (jwtPayload, callback) => {
+        return UserModel.findById(jwtPayload._id)
+            .then(user => {
+                return callback(null, user);
+            })
+            .catch(err => {
+                return callback(err, jwtPayload);
+            });
+    }
+));
 
 const authRouter = Router();
 
@@ -30,9 +47,9 @@ authRouter.post('/login', (req, res, next) => {
                 res.send(err);
             }
             const token = sign(user.toJSON(), `${process.env["SECRET"]}`, {
-                expiresIn: 120,
+                expiresIn: TOKEN_EXPIRATION,
             });
-            return res.json({ user, token, expiresIn: 120 });
+            return res.json({ user, token, expiresIn: TOKEN_EXPIRATION });
         });
     })(req, res);
 });
