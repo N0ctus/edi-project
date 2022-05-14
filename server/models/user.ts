@@ -4,14 +4,15 @@ import passportLocalMongoose from 'passport-local-mongoose';
 import dotenv from 'dotenv';
 
 dotenv.config({
-  path: `${__dirname}/../.env`
+  path: `${__dirname}/../../.env`
 });
 
 connect(`${process.env["DB_CONNECT"]}/${process.env["DB_NAME"]}`);
 
 const User = new Schema({
   username: String,
-  password: String
+  password: String,
+  admin: Boolean,
 });
 // Export Model
 User.plugin(passportLocalMongoose);
