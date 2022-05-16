@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +20,7 @@ import { DataTableComponent } from './navigation/data-table/data-table.component
 import { UsersTableComponent } from './navigation/users-table/users-table.component';
 import { UsersEmailsComponent } from './navigation/users-emails/users-emails.component';
 import { SettingsComponent } from './navigation/settings/settings.component';
+import { TokenInterceptor } from 'auth/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,13 @@ import { SettingsComponent } from './navigation/settings/settings.component';
     FormsModule,
     HighchartsChartModule,
     AgGridModule.withComponents([]),
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

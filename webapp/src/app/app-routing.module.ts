@@ -12,13 +12,14 @@ import { UsersEmailsComponent } from './navigation/users-emails/users-emails.com
 import { SettingsComponent } from './navigation/settings/settings.component';
 
 const routes: Routes = [
+  { path: '*', redirectTo: 'dashboard' },
   { path: 'home', component: AppComponent, canActivate : [AuthGuard] },
   { path: 'login', component : LoginComponent},
-  { path: 'dashboard', component : HomeComponent},
-  { path: 'data-table', component : DataTableComponent},
-  { path: 'users', component : UsersTableComponent},
-  { path: 'emails', component : UsersEmailsComponent},
-  { path: 'settings', component : SettingsComponent},
+  { path: 'dashboard', component : HomeComponent, canActivate : [AuthGuard]},
+  { path: 'data-table', component : DataTableComponent, canActivate : [AuthGuard]},
+  { path: 'users', component : UsersTableComponent, canActivate : [AuthGuard]},
+  { path: 'emails', component : UsersEmailsComponent, canActivate : [AuthGuard]},
+  { path: 'settings', component : SettingsComponent, canActivate : [AuthGuard]},
 ];
 
 @NgModule({

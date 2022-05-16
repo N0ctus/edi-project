@@ -5,7 +5,7 @@ import UserModel from '../models/user';
 import dotenv from 'dotenv';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-const TOKEN_EXPIRATION = '2days';
+const TOKEN_EXPIRATION = 60 * 60 * 8;
 
 dotenv.config({
     path: `${__dirname}/../../.env`

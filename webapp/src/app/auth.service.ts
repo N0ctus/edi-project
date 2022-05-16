@@ -5,7 +5,6 @@ import { UserAuthResponse } from 'src/auth/User.model';
 import * as moment from "moment";
 import { tap } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -13,19 +12,12 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  login(email: string, password: string) {
+  public login(email: string, password: string) {
     return this.http.post<UserAuthResponse>('http://localhost:3000/auth/login', {}, { params: { 'username': email, 'password': password } })
       .pipe(tap(res => this.setSession(res)));
   }
 
-  private setSession(authResult: UserAuthResponse) {
-    const expiresAt = moment().add(authResult.expiresIn, 'second');
-
-    localStorage.setItem('id_token', authResult.token);
-    localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()));
-  }
-
-  logout() {
+  public logout() {
     localStorage.removeItem("id_token");
     localStorage.removeItem("expires_at");
   }
@@ -34,13 +26,24 @@ export class AuthService {
     return moment().isBefore(this.getExpiration());
   }
 
-  isLoggedOut() {
+  public isLoggedOut() {
     return !this.isLoggedIn();
   }
 
-  getExpiration() {
+  public getExpiration() {
     const expiration: any = localStorage.getItem("expires_at");
     const expiresAt = JSON.parse(expiration);
     return moment(expiresAt);
+  }
+
+  public getToken(): string {
+    return localStorage.getItem('id_token') as string;
+  }
+
+  private setSession(authResult: UserAuthResponse) {
+    const expiresAt = moment().add(authResult.expiresIn, 'second');
+
+    localStorage.setItem('id_token', authResult.token);
+    localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()));
   }
 }
