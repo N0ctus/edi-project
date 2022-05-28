@@ -8,7 +8,7 @@ import { LoginComponent } from './home/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { DataTableComponent } from './navigation/data-table/data-table.component';
 import { UsersTableComponent } from './navigation/users-table/users-table.component';
-import { UsersEmailsComponent } from './navigation/users-emails/users-emails.component';
+import { ImportDataComponent } from './navigation/import-data/import-data.component';
 import { SettingsComponent } from './navigation/settings/settings.component';
 
 const routes: Routes = [
@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'dashboard', component : HomeComponent, canActivate : [AuthGuard]},
   { path: 'data-table', component : DataTableComponent, canActivate : [AuthGuard]},
   { path: 'users', component : UsersTableComponent, canActivate : [AuthGuard]},
-  { path: 'emails', component : UsersEmailsComponent, canActivate : [AuthGuard]},
+  { path: 'import', component : ImportDataComponent, canActivate : [AuthGuard]},
   { path: 'settings', component : SettingsComponent, canActivate : [AuthGuard]},
 ];
 

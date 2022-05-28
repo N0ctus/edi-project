@@ -18,7 +18,7 @@ import { HighchartsChartModule } from 'highcharts-angular';
 import { AgGridModule } from 'ag-grid-angular';
 import { DataTableComponent } from './navigation/data-table/data-table.component';
 import { UsersTableComponent } from './navigation/users-table/users-table.component';
-import { UsersEmailsComponent } from './navigation/users-emails/users-emails.component';
+import { ImportDataComponent } from './navigation/import-data/import-data.component';
 import { SettingsComponent } from './navigation/settings/settings.component';
 import { TokenInterceptor } from 'auth/token.interceptor';
 
@@ -32,7 +32,7 @@ import { TokenInterceptor } from 'auth/token.interceptor';
     ChartCardComponent,
     DataTableComponent,
     UsersTableComponent,
-    UsersEmailsComponent,
+    ImportDataComponent,
     SettingsComponent,
   ],
   imports: [

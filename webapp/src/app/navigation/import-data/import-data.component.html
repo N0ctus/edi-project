@@ -1,0 +1,42 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="alerts-container">
+      <div class="d-flex align-items-center alert alert-primary mt-2" role="alert">
+        <span class="material-icons"> info </span>&nbsp; The import has been started. It might take some minutes.
+      </div>
+      <div class="d-flex align-items-center alert alert-warning mt-2" role="alert">
+        <span class="material-icons"> warning </span>&nbsp; This file does not respect the expected format, you can't import it.
+      </div>
+      <div class="d-flex align-items-center alert alert-danger mt-2" role="alert">
+        <span class="material-icons"> report </span>&nbsp; The import has failed! See details.
+      </div>
+      <div class="d-flex align-items-center alert alert-success mt-2" role="alert">
+        <span class="material-icons"> done </span>&nbsp; The import has been done successfully!
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="col-6">
+        Please start by selecting the type of data file you want to import:
+      </div>
+      <div class="col-6 mt-2">
+        <select class="form-select" aria-label="Data file type">
+          <option selected>Data file type</option>
+          <option value="1">Connections</option>
+          <option value="2">Entities</option>
+          <option value="3">Partners</option>
+          <option value="4">Transactions</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <button type="button" class="d-flex align-items-center btn btn-secondary btn-lg my-2">
+          <span class="material-icons"> upload_file </span>&nbsp; Add file
+        </button>
+      </div>
+      <div class="col-6">
+        <button type="button" class="d-flex align-items-center btn btn-primary btn-lg">
+          <span class="material-icons"> restart_alt </span>&nbsp; Start import
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
