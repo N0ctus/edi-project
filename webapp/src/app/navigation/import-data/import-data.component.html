@@ -1,17 +1,17 @@
 <div class="container mt-4">
   <div class="row justify-content-center">
     <div class="alerts-container">
-      <div class="d-flex align-items-center alert alert-primary mt-2" role="alert">
-        <span class="material-icons"> info </span>&nbsp; The import has been started. It might take some minutes.
+      <div class="d-flex align-items-center alert alert-primary mt-2" role="alert" *ngIf="fileInfo">
+        <span class="material-icons"> info </span>&nbsp; {{ fileInfo }}
       </div>
-      <div class="d-flex align-items-center alert alert-warning mt-2" role="alert">
-        <span class="material-icons"> warning </span>&nbsp; This file does not respect the expected format, you can't import it.
+      <div class="d-flex align-items-center alert alert-warning mt-2" role="alert" *ngIf="fileWarning">
+        <span class="material-icons"> warning </span>&nbsp; {{ fileWarning }}
       </div>
-      <div class="d-flex align-items-center alert alert-danger mt-2" role="alert">
-        <span class="material-icons"> report </span>&nbsp; The import has failed! See details.
+      <div class="d-flex align-items-center alert alert-danger mt-2" role="alert" *ngIf="fileError">
+        <span class="material-icons"> report </span>&nbsp; {{ fileError }}
       </div>
-      <div class="d-flex align-items-center alert alert-success mt-2" role="alert">
-        <span class="material-icons"> done </span>&nbsp; The import has been done successfully!
+      <div class="d-flex align-items-center alert alert-success mt-2" role="alert" *ngIf="fileSuccess">
+        <span class="material-icons"> done </span>&nbsp; {{ fileSuccess }}
       </div>
     </div>
     <div class="col-6">
@@ -19,23 +19,33 @@
         Please start by selecting the type of data file you want to import:
       </div>
       <div class="col-6 mt-2">
-        <select class="form-select" aria-label="Data file type">
-          <option selected>Data file type</option>
-          <option value="1">Connections</option>
-          <option value="2">Entities</option>
-          <option value="3">Partners</option>
-          <option value="4">Transactions</option>
+        <select class="form-select" aria-label="Data file type" (change)="dataTypeChange($event)">
+          <option selected disabled="disabled">Please select a type</option>
+          <option [value]="ExpectedCSVColumns.Connections">Connections</option>
+          <option [value]="ExpectedCSVColumns.Transactions">Transactions</option>
+          <option [value]="ExpectedCSVColumns.Partners">Partners</option>
+          <option [value]="ExpectedCSVColumns.Entity">Entity</option>
         </select>
       </div>
       <div class="col-6">
-        <button type="button" class="d-flex align-items-center btn btn-secondary btn-lg my-2">
-          <span class="material-icons"> upload_file </span>&nbsp; Add file
-        </button>
+        <label for="csv-input" class="d-flex align-items-center btn btn-secondary btn-lg my-2">
+          <span class="material-icons" *ngIf="!loading"> upload_file </span>
+          <span class="material-icons loading" *ngIf="loading"> refresh </span>
+          &nbsp; {{ fileName }}
+          <input type="file" id="csv-input" accept=".csv" (change)="loadCSV($event)" [disabled]="expectedCsvColumns === null"/>
+        </label>
       </div>
       <div class="col-6">
-        <button type="button" class="d-flex align-items-center btn btn-primary btn-lg">
+        <button type="button" class="d-flex align-items-center btn btn-primary btn-lg" [disabled]="parsedCSV === null" (click)="startUpload()">
           <span class="material-icons"> restart_alt </span>&nbsp; Start import
         </button>
+      </div>
+      <div class="progress my-2" *ngIf="progress > 0">
+        <div
+          class="progress-bar"
+          role="progressbar"
+          [style.width]="progress + '%'"
+        ></div>
       </div>
     </div>
   </div>
