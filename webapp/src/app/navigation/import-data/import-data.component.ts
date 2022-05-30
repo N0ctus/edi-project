@@ -43,6 +43,7 @@ export class ImportDataComponent implements OnInit {
     this.fileReader.onload = ((ev) => {
       this.loading = false;
       this.parsedCSV = CSVToArray(ev.target?.result as string);
+      console.log(this.parsedCSV);
       if (this.parsedCSV.length > 0 && this.parsedCSV[0].length === this.expectedCsvColumns) {
         this.fileInfo = "The file is valid and ready to be imported!";
       } else {

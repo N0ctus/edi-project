@@ -7,6 +7,7 @@ import authRouter from "./routes/auth";
 import dotenv from 'dotenv';
 import usersRouter from "./routes/users";
 import fileUpload from "express-fileupload";
+import uploadRouter from "./routes/upload";
 
 dotenv.config({
   path: `${__dirname}/../.env`
@@ -34,27 +35,7 @@ app.use(cors());
 
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
-
-app.post('/csv-upload', function(req: any, res) {
-  let csvFile;
-  let uploadPath;
-
-  if (!req.files || Object.keys(req.files).length === 0) {
-    res.status(400).send('No files were uploaded.');
-    return;
-  }
-  csvFile = req.files.csv;
-
-  uploadPath = __dirname + '/uploads/' + csvFile.name;
-
-  csvFile.mv(uploadPath, function(err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-
-    res.send('File uploaded to ' + uploadPath);
-  });
-});
+app.use('/csv', uploadRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

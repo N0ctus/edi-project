@@ -16,7 +16,7 @@ export class CsvUploadService {
     formData.append('name', name);
     formData.append('csv', csvFile);
     return this.http
-      .post(`${BACKEND_URL}/csv-upload`, formData, {
+      .post(`${BACKEND_URL}/csv/connections`, formData, {
         reportProgress: true,
         observe: 'events',
       })
