@@ -13,6 +13,7 @@ import { SettingsComponent } from './navigation/settings/settings.component';
 
 const routes: Routes = [
   { path: '*', redirectTo: 'dashboard' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'home', component: AppComponent, canActivate : [AuthGuard] },
   { path: 'login', component : LoginComponent},
   { path: 'dashboard', component : HomeComponent, canActivate : [AuthGuard]},

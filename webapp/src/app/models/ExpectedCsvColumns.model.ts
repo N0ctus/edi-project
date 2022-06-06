@@ -6,3 +6,7 @@ export enum ExpectedCSVColumns {
     Partners = 10,
     Entity = 18,
 };
+
+export function getKeyName(value: ExpectedCSVColumns) {
+  return ExpectedCSVColumns[value];
+}

@@ -11,12 +11,12 @@ export class CsvUploadService {
 
   constructor(private http: HttpClient) { }
 
-  uploadFile(name: string, csvFile: File): Observable<any> {
+  uploadFile(name: string, csvFile: File, operationType: string): Observable<any> {
     const formData: any = new FormData();
     formData.append('name', name);
     formData.append('csv', csvFile);
     return this.http
-      .post(`${BACKEND_URL}/csv/connections`, formData, {
+      .post(`${BACKEND_URL}/csv/${operationType}`, formData, {
         reportProgress: true,
         observe: 'events',
       })

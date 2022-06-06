@@ -1,6 +1,6 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ExpectedCSVColumns } from 'src/app/models/ExpectedCsvColumns.model';
+import { ExpectedCSVColumns, getKeyName } from 'src/app/models/ExpectedCsvColumns.model';
 import { CsvUploadService } from 'src/app/services/csv-upload.service';
 import { CSVToArray } from 'src/app/utils/csv-to-array';
 
@@ -76,7 +76,8 @@ export class ImportDataComponent implements OnInit {
     if (this.inputFile !== undefined) {
       this.csvUploadService.uploadFile(
         this.fileName,
-        this.inputFile
+        this.inputFile,
+        this.getOperationType(),
       ).subscribe((event: HttpEvent<any>) => {
         switch (event.type) {
           case HttpEventType.Sent:
@@ -98,6 +99,27 @@ export class ImportDataComponent implements OnInit {
         }
       });
     }
+  }
+
+  private getOperationType(): string {
+    let operationType = '';
+    switch (this.expectedCsvColumns) {
+      case ExpectedCSVColumns.Connections:
+        operationType = 'connections';
+        break;
+      case ExpectedCSVColumns.Entity:
+        operationType = 'entities';
+        break;
+      case ExpectedCSVColumns.Partners:
+        operationType = 'partners';
+        break;
+      case ExpectedCSVColumns.Transactions:
+        operationType = 'transactions';
+        break;
+      default:
+        break;
+    }
+    return operationType;
   }
 
   private resetCsvLoading() {
