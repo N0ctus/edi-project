@@ -5,8 +5,10 @@
   "main": "./server/index.js",
   "scripts": {
     "start": "concurrently \"npm run run:backend\" \"npm run run:frontend\"",
-    "run:backend": "npx nodemon -r ./server/index.ts",
+    "run:backend": "npx ts-node ./server/index.ts",
     "run:frontend": "cd ./webapp/ && npm start",
+    "seed:users": "npx nodemon -r ./server/db_seed/users.seed.ts",
+    "data:importer": "npx ts-node ./server/data-importer-test.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +27,7 @@
     "concurrently": "^7.1.0",
     "connect-ensure-login": "^0.1.1",
     "cors": "^2.8.5",
+    "csv-split-stream": "^1.0.2",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3",

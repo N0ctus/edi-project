@@ -2,12 +2,14 @@ import express from "express";
 import bodyParser from 'body-parser';
 import session from "express-session";
 import passport from "passport";
-import cors from 'cors';
-import authRouter from "./routes/auth";
 import dotenv from 'dotenv';
-import usersRouter from "./routes/users";
 import fileUpload from "express-fileupload";
+import cors from 'cors';
+
+import authRouter from "./routes/auth";
+import usersRouter from "./routes/users";
 import uploadRouter from "./routes/upload";
+import dataRouter from "./routes/data";
 
 dotenv.config({
   path: `${__dirname}/../.env`
@@ -36,6 +38,7 @@ app.use(cors());
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/csv', uploadRouter);
+app.use('/data', dataRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

@@ -1,13 +1,21 @@
 import { Router } from "express";
 import passport from "passport";
-import { Connection, ConnectionRawCsv, ConnectionsUtils } from "../models/Connections.schema";
-import { Entity, EntityRawCsv, EntitysUtils } from "../models/Entities.schema";
-import { ExpectedCSVColumns } from "../models/ExpectedCsvColumns.model";
-import { Partner, PartnersRawCsv, PartnersUtils } from "../models/Partners.schema";
-import { Transaction, TransactionsRawCsv, TransactionsUtils } from "../models/transactions.schema";
-import { CSVToArray } from "../utils/csv-to-array";
+import { fork } from 'child_process';
+import fs from 'fs';
+const csvSplitStream = require('csv-split-stream');
+
+// Init the child processes to avoid issues with express server
+const connectionsImporterProcess = fork(`${__dirname}/../importers/connections.ts`);
+const transactionsImporterProcess = fork(`${__dirname}/../importers/transactions.ts`);
+const entitiesImporterProcess = fork(`${__dirname}/../importers/entities.ts`);
+const partnersImporterProcess = fork(`${__dirname}/../importers/partners.ts`);
 
 const uploadRouter = Router();
+
+uploadRouter.get('/status', passport.authenticate('jwt', { session: false }), (req, res) => {
+  connectionsImporterProcess.once('message', (msg) => res.send(msg));
+  connectionsImporterProcess.send([]);
+});
 
 uploadRouter.post('/connections', passport.authenticate('jwt', { session: false }), (req, res) => {
   let csvFile;
@@ -19,41 +27,28 @@ uploadRouter.post('/connections', passport.authenticate('jwt', { session: false 
   }
   csvFile = req.files.csv;
 
-  uploadPath = `${__dirname}/../uploads/${csvFile.name}`;
+  uploadPath = `${__dirname}/../uploads/`;
+  const originalFilePath = `${uploadPath}/${csvFile.name}`;
+  const filesQueue = [];
 
-  if (csvFile?.data?.toString()) {
-    const parsedCSV = CSVToArray(csvFile.data.toString());
-    if (parsedCSV.length > 0 && parsedCSV[0].length === ExpectedCSVColumns.Connections) {
-      // The CSV is valid
-      const parsedRows: ConnectionRawCsv[] = parsedCSV.map((row, idx) => {
-        if (idx > 0) {
-          return ConnectionsUtils.convertRowToModel(row);
-        }
-      });
-      parsedRows.shift();
-      const schemaData = ConnectionsUtils.convertCsvToSchema(parsedRows);
-      // Start mongodb write job
-      const jobs = schemaData.map(item => {
-        const job = new Connection(item);
-        const target = Connection.findById(item._id);
-        if (!target) {
-          return job.save();
-        } else {
-          return new Promise(r => r(null));
-        }
-      });
-      // Add copy file job
-      jobs.push(csvFile.mv(uploadPath));
-      // Once all data is inserted
-      Promise.all(jobs).then(() => {
-        res.send(JSON.stringify({ message: 'Uploaded and inserted all the data!'}));
-        // Catch any err
-      }).catch((e) => res.status(500).send(e));
-    } else {
-      res.status(400).send(`Invalid format detected, parsed columns ${parsedCSV.length}.`);
-      return;
-    }
-  }
+  csvFile.mv(originalFilePath).then(() => {
+    csvSplitStream.split(
+      fs.createReadStream(originalFilePath),
+      {
+        lineLimit: 100
+      },
+      (index) => {
+        const chunkFilePath = `${uploadPath}/connections-${index}.csv`;
+        filesQueue.push(chunkFilePath);
+        return fs.createWriteStream(chunkFilePath);
+      }
+    )
+    .then(r => {
+      connectionsImporterProcess.send(filesQueue);
+      res.send(JSON.stringify(filesQueue))
+    })
+    .catch(e => res.status(500).send(JSON.stringify(e)));
+  });
 });
 
 uploadRouter.post('/transactions', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -66,41 +61,28 @@ uploadRouter.post('/transactions', passport.authenticate('jwt', { session: false
   }
   csvFile = req.files.csv;
 
-  uploadPath = `${__dirname}/../uploads/${csvFile.name}`;
+  uploadPath = `${__dirname}/../uploads/`;
+  const originalFilePath = `${uploadPath}/${csvFile.name}`;
+  const filesQueue = [];
 
-  if (csvFile?.data?.toString()) {
-    const parsedCSV = CSVToArray(csvFile.data.toString());
-    if (parsedCSV.length > 0 && parsedCSV[0].length === ExpectedCSVColumns.Transactions) {
-      // The CSV is valid
-      const parsedRows: TransactionsRawCsv[] = parsedCSV.map((row, idx) => {
-        if (idx > 0) {
-          return TransactionsUtils.convertRowToModel(row);
-        }
-      });
-      parsedRows.shift();
-      const schemaData = TransactionsUtils.convertCsvToSchema(parsedRows);
-      // Start mongodb write job
-      const jobs = schemaData.map(item => {
-        const job = new Transaction(item);
-        const target = Transaction.findById(item._id);
-        if (!target) {
-          return job.save();
-        } else {
-          return new Promise(r => r(null));
-        }
-      });
-      // Add copy file job
-      jobs.push(csvFile.mv(uploadPath));
-      // Once all data is inserted
-      Promise.all(jobs).then(() => {
-        res.send(JSON.stringify({ message: 'Uploaded and inserted all the data!'}));
-        // Catch any err
-      }).catch((e) => res.status(500).send(e));
-    } else {
-      res.status(400).send(`Invalid format detected, parsed columns ${parsedCSV.length}.`);
-      return;
-    }
-  }
+  csvFile.mv(originalFilePath).then(() => {
+    csvSplitStream.split(
+      fs.createReadStream(originalFilePath),
+      {
+        lineLimit: 250000
+      },
+      (index) => {
+        const chunkFilePath = `${uploadPath}/transactions-${index}.csv`;
+        filesQueue.push(chunkFilePath);
+        return fs.createWriteStream(chunkFilePath);
+      }
+    )
+    .then(r => {
+      transactionsImporterProcess.send(filesQueue);
+      res.send(JSON.stringify(filesQueue))
+    })
+    .catch(e => res.status(500).send(JSON.stringify(e)));
+  });
 });
 
 uploadRouter.post('/partners', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -113,41 +95,28 @@ uploadRouter.post('/partners', passport.authenticate('jwt', { session: false }),
   }
   csvFile = req.files.csv;
 
-  uploadPath = `${__dirname}/../uploads/${csvFile.name}`;
+  uploadPath = `${__dirname}/../uploads/`;
+  const originalFilePath = `${uploadPath}/${csvFile.name}`;
+  const filesQueue = [];
 
-  if (csvFile?.data?.toString()) {
-    const parsedCSV = CSVToArray(csvFile.data.toString());
-    if (parsedCSV.length > 0 && parsedCSV[0].length === ExpectedCSVColumns.Partners) {
-      // The CSV is valid
-      const parsedRows: PartnersRawCsv[] = parsedCSV.map((row, idx) => {
-        if (idx > 0) {
-          return PartnersUtils.convertRowToModel(row);
-        }
-      });
-      parsedRows.shift();
-      const schemaData = PartnersUtils.convertCsvToSchema(parsedRows);
-      // Start mongodb write job
-      const jobs = schemaData.map(item => {
-        const job = new Partner(item);
-        const target = Partner.findById(item._id);
-        if (!target) {
-          return job.save();
-        } else {
-          return new Promise(r => r(null));
-        }
-      });
-      // Add copy file job
-      jobs.push(csvFile.mv(uploadPath));
-      // Once all data is inserted
-      Promise.all(jobs).then(() => {
-        res.send(JSON.stringify({ message: 'Uploaded and inserted all the data!'}));
-        // Catch any err
-      }).catch((e) => res.status(500).send(e));
-    } else {
-      res.status(400).send(`Invalid format detected, parsed columns ${parsedCSV.length}.`);
-      return;
-    }
-  }
+  csvFile.mv(originalFilePath).then(() => {
+    csvSplitStream.split(
+      fs.createReadStream(originalFilePath),
+      {
+        lineLimit: 250000
+      },
+      (index) => {
+        const chunkFilePath = `${uploadPath}/partners-${index}.csv`;
+        filesQueue.push(chunkFilePath);
+        return fs.createWriteStream(chunkFilePath);
+      }
+    )
+    .then(r => {
+      partnersImporterProcess.send(filesQueue);
+      res.send(JSON.stringify(filesQueue))
+    })
+    .catch(e => res.status(500).send(JSON.stringify(e)));
+  });
 });
 
 uploadRouter.post('/entities', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -160,41 +129,28 @@ uploadRouter.post('/entities', passport.authenticate('jwt', { session: false }),
   }
   csvFile = req.files.csv;
 
-  uploadPath = `${__dirname}/../uploads/${csvFile.name}`;
+  uploadPath = `${__dirname}/../uploads/`;
+  const originalFilePath = `${uploadPath}/${csvFile.name}`;
+  const filesQueue = [];
 
-  if (csvFile?.data?.toString()) {
-    const parsedCSV = CSVToArray(csvFile.data.toString());
-    if (parsedCSV.length > 0 && parsedCSV[0].length === ExpectedCSVColumns.Entity) {
-      // The CSV is valid
-      const parsedRows: EntityRawCsv[] = parsedCSV.map((row, idx) => {
-        if (idx > 0) {
-          return EntitysUtils.convertRowToModel(row);
-        }
-      });
-      parsedRows.shift();
-      const schemaData = EntitysUtils.convertCsvToSchema(parsedRows);
-      // Start mongodb write job
-      const jobs = schemaData.map(item => {
-        const job = new Entity(item);
-        const target = Entity.findById(item._id);
-        if (!target) {
-          return job.save();
-        } else {
-          return new Promise(r => r(null));
-        }
-      });
-      // Add copy file job
-      jobs.push(csvFile.mv(uploadPath));
-      // Once all data is inserted
-      Promise.all(jobs).then(() => {
-        res.send(JSON.stringify({ message: 'Uploaded and inserted all the data!'}));
-        // Catch any err
-      }).catch((e) => res.status(500).send(e));
-    } else {
-      res.status(400).send(`Invalid format detected, parsed columns ${parsedCSV.length}.`);
-      return;
-    }
-  }
+  csvFile.mv(originalFilePath).then(() => {
+    csvSplitStream.split(
+      fs.createReadStream(originalFilePath),
+      {
+        lineLimit: 250000
+      },
+      (index) => {
+        const chunkFilePath = `${uploadPath}/entites-${index}.csv`;
+        filesQueue.push(chunkFilePath);
+        return fs.createWriteStream(chunkFilePath);
+      }
+    )
+    .then(r => {
+      entitiesImporterProcess.send(filesQueue);
+      res.send(JSON.stringify(filesQueue))
+    })
+    .catch(e => res.status(500).send(JSON.stringify(e)));
+  });
 });
 
 export default uploadRouter;
