@@ -29,6 +29,7 @@ uploadRouter.post('/connections', passport.authenticate('jwt', { session: false 
         });
         parsedRows.shift();
         const schemaData = convertCsvToSchema(parsedRows);
+        // Start mongodb write job
         const jobs = schemaData.map(item => {
           const job = new Connection(item);
           const target = Connection.findById(item._id);
@@ -38,10 +39,11 @@ uploadRouter.post('/connections', passport.authenticate('jwt', { session: false 
             return new Promise(r => r(null));
           }
         });
+        // Once all data is inserted
         Promise.all(jobs).then(() => {
           res.send('Uploaded and imported all the data!');
+          // Catch any err
         }).catch((e) => res.status(500).send(e));
-        console.log(parsedRows[2]);
       } else {
         res.status(400).send(`Invalid format detected, parsed columns ${parsedCSV.length}.`);
         return;
