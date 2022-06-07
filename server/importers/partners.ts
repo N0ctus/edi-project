@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { connect } from 'mongoose';
 import { CSVToArray } from './../utils/csv-to-array';
 import { ExpectedCSVColumns } from './../models/ExpectedCsvColumns.model';
-import { Partner, PartnersRawCsv, PartnersUtils } from './../models/Partners.schema';
+import { Partner, PartnersRawCsv, PartnersUtils } from '../models/Partners';
 
 dotenv.config({
   path: `${__dirname}/../../.env`
