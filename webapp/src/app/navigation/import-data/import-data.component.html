@@ -1,5 +1,17 @@
-<div class="container mt-4">
-  <div class="row justify-content-center">
+<div class="container d-flex flex-column">
+  <div class="jumbotron jumbotron-fluid my-4">
+    <div class="container">
+      <h1 class="display-4">Import data</h1>
+      <p class="lead">To import your data properly please make sure to:</p>
+      <ol>
+        <li>Select the data type.</li>
+        <li>Select the according file.</li>
+        <li>If the file is validated, start the import.</li>
+      </ol>
+      <p class="lead">The upload and processing might take time if the file is too large.</p>
+    </div>
+  </div>
+  <div class="row justify-content-center" style="height: 35vh">
     <div class="alerts-container">
       <div class="d-flex align-items-center alert alert-primary mt-2" role="alert" *ngIf="fileInfo">
         <span class="material-icons"> info </span>&nbsp; {{ fileInfo }}
@@ -15,9 +27,6 @@
       </div>
     </div>
     <div class="col-6">
-      <div class="col-6">
-        Please start by selecting the type of data file you want to import:
-      </div>
       <div class="col-6 mt-2">
         <select class="form-select" aria-label="Data file type" (change)="dataTypeChange($event)">
           <option selected disabled="disabled">Please select a type</option>

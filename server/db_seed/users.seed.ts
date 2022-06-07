@@ -11,6 +11,6 @@ batch.push(UserModel.register({ username: 'lucid', active: false , admin: false}
 
 Promise.all(batch).then(() => {
     console.log('Seed users created!');
-    return 0;
+    process.exit(0);
 })
 .catch(err => console.error(err));

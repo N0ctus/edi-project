@@ -16,6 +16,10 @@ export class UsersService {
   public getUsersList(): Observable<UsersResponseInterface> {
     return this.http.get<UsersResponseInterface>(`${BACKEND_URL}/users`);
   }
+
+  public getTransactionsData() {
+    return this.http.get(`${BACKEND_URL}/data/transactions`);
+  }
 }
 
 export interface UsersResponse {

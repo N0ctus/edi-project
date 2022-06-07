@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import * as Highcharts from 'highcharts';
 
@@ -7,9 +7,11 @@ import * as Highcharts from 'highcharts';
   templateUrl: './chart-card.component.html',
   styleUrls: ['./chart-card.component.scss']
 })
-export class ChartCardComponent implements OnInit {
+export class ChartCardComponent implements OnChanges {
 
   Highcharts: typeof Highcharts = Highcharts;
+
+  public updated = false;
 
   @Input()
   public title: string = '';
@@ -17,9 +19,10 @@ export class ChartCardComponent implements OnInit {
   @Input()
   public chartOptions: Highcharts.Options = {};
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['chartOptions']) {
+      this.updated = true;
+      console.log(changes['chartOptions'])
+    }
   }
-
 }

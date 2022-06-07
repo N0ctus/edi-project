@@ -3,7 +3,8 @@ import passport from "passport";
 import { Connection } from "../models/Connections.schema";
 import { Entity } from "../models/Entities.schema";
 import { Partner } from "../models/Partners.schema";
-import { Transaction } from "../models/transactions.schema";
+import { Transaction, TransactionsSchema } from "../models/transactions.schema";
+import moment from 'moment';
 
 const dataRouter = Router();
 
@@ -20,15 +21,38 @@ dataRouter.get('/connections', passport.authenticate('jwt', { session: false }),
 });
 
 dataRouter.get('/transactions', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Transaction.find({}, (err, item) => {
-        const transactionsMap = {};
-
-        item.forEach((item) => {
-          transactionsMap[item._id] = item;
-        });
-
-        res.send(transactionsMap);
-      });
+    //query with mongoose
+    // const query = Transaction.find({}).select('transactionType startTime -_id');
+    const query = Transaction.aggregate([
+      {
+        "$addFields": {
+          "date": {
+            "$dateFromString": {
+              "dateString": "$startTime"
+            }
+          },
+        }
+      },
+      {
+          $group: {
+              _id: {
+                dayOfYear: { "$dayOfYear": "$date" },
+                transactionType: "$transactionType",
+              },
+              count: { $sum: 1 }
+          }
+      }
+  ], function(err, result) {
+      if (err) {
+          console.log(err);
+      } else {
+        res.send(result);
+      }
+  });
+/*
+    query.exec((err, someValue) => {
+        res.send(someValue);
+    }); */
 });
 
 dataRouter.get('/entities', passport.authenticate('jwt', { session: false }), (req, res) => {

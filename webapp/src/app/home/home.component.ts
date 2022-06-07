@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NamePercentData } from '../models/NamePercentData.model';
+import { UsersService } from '../services/users.service';
 
 @Component({
   selector: 'app-home',
@@ -53,43 +54,7 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-  public transactions: Highcharts.Options = {
-    chart: {
-      type: 'areaspline',
-      marginLeft: 0
-    },
-    title: {
-      text: 'Transaction per type (Host/SAP)',
-      align: 'left',
-    },
-    legend: {
-      layout: 'vertical',
-      align: 'left',
-      verticalAlign: 'top',
-      x: 150,
-      y: 100,
-      floating: true,
-      borderWidth: 1,
-      backgroundColor: '#FFFFFF'
-    },
-    credits: {
-      enabled: false
-    },
-    plotOptions: {
-      areaspline: {
-        fillOpacity: 0.5
-      }
-    },
-    series: [{
-      name: 'VDI',
-      type: 'areaspline',
-      data: [3, 4, 3, 5, 4, 10, 12, 4, 6, 7, 2, 9, 2, 5, 6]
-    }, {
-      name: 'IDoc',
-      type: 'areaspline',
-      data: [1, 3, 4, 3, 3, 5, 4, 5, 7, 1, 7, 2, 4, 7, 1]
-    }]
-  };
+  public transactions: Highcharts.Options = {};
   public topFilesExchange: Highcharts.Options = {
     chart: {
       plotShadow: false,
@@ -210,9 +175,43 @@ export class HomeComponent implements OnInit {
     }]
   };
 
-  constructor() { }
+  constructor(
+    private usersService: UsersService
+  ) {
+  }
 
   ngOnInit(): void {
+    this.usersService.getTransactionsData().subscribe((resp: any) => {
+      const flatTransactions = resp.map((el: any) => ({ 'name': el._id.transactionType, dayOfYear: el._id.dayOfYear, count: el.count}));
+      const groupedTransactions = this.groupArrayOfObjects(flatTransactions, 'name');
+      const series = Object.values(groupedTransactions).map((el: any) => ({ name: el[0].name, type: 'areaspline', data: el.map((it: any) => it.count)})).filter(item => !!item.name) as any;
+      this.transactions = {
+        chart: {
+          type: 'areaspline',
+          marginLeft: 0
+        },
+        title: {
+          text: 'Transaction per type',
+          align: 'left',
+        },
+        credits: {
+          enabled: false
+        },
+        plotOptions: {
+          areaspline: {
+            fillOpacity: 0.5
+          }
+        },
+        series: series,
+      };
+    });
+  }
+
+  groupArrayOfObjects(list: Array<any>, key: string) {
+    return list.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
   }
 
 }
