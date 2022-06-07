@@ -22,6 +22,10 @@ import { ImportDataComponent } from './navigation/import-data/import-data.compon
 import { SettingsComponent } from './navigation/settings/settings.component';
 import { TokenInterceptor } from 'auth/token.interceptor';
 
+import * as Highcharts from 'highcharts';
+import theme from 'highcharts/themes/dark-unica';
+theme(Highcharts);
+
 @NgModule({
   declarations: [
     AppComponent,

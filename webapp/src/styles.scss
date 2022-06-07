@@ -5,3 +5,59 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+$primary: #7f7fd5;
+$primaryDark: #53539d;
+
+/** global color overrides **/
+
+.progress-bar {
+  background-color: $primary;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  background-color: $primary;
+}
+
+.nav-link {
+  color: $primary;
+}
+
+.form-check-input:checked {
+  background-color: $primary;
+  border-color: $primary;
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: $primaryDark;
+}
+
+.app-navbar {
+  background-color: #282C31;
+  padding-top: 2rem;
+  padding-left: 0;
+  padding-right: 0;
+  border-right: solid 1px #4D4D4D;
+}
+
+.app-content {
+  background: #212427;
+}
+
+.card {
+  background: #282C31;
+  border: solid 1px #4D4D4D;
+  color: #CACACA;
+  border-radius: .75rem;
+}
+
+.progress {
+  border-radius: .5rem;
+  height: .75rem;
+  background: #444444;
+}
+
+.progress-bar {
+  border-radius: .5rem;
+  height: .75rem;
+}

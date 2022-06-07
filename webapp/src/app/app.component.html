@@ -1,9 +1,9 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="p-0" style="max-width: 92px;" *ngIf="isLoggedIn">
+    <div class="app-navbar" style="max-width: 92px;" *ngIf="isLoggedIn">
       <app-sidebar></app-sidebar>
     </div>
-    <div class="col-11">
+    <div class="app-content col-11">
       <router-outlet></router-outlet>
     </div>
   </div>
