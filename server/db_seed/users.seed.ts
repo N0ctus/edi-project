@@ -1,5 +1,5 @@
 import { PassportLocalDocument } from "mongoose";
-import UserModel from "../models/user";
+import UserModel from "./../models/user";
 
 const batch: Array<Promise<PassportLocalDocument>> = []
 

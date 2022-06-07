@@ -1,10 +1,9 @@
 import { Router } from "express";
 import passport from "passport";
-import { Connection } from "../models/Connections.schema";
-import { Entity } from "../models/Entities.schema";
-import { Partner } from "../models/Partners.schema";
-import { Transaction, TransactionsSchema } from "../models/transactions.schema";
-import moment from 'moment';
+import { Connection } from "./../models/Connections.schema";
+import { Entity } from "./../models/Entities.schema";
+import { Partner } from "./../models/Partners.schema";
+import { Transaction } from "./../models/transactions.schema";
 
 const dataRouter = Router();
 

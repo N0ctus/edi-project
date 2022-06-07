@@ -1,9 +1,9 @@
 import fs from 'fs';
 import dotenv from 'dotenv';
 import { connect } from 'mongoose';
-import { CSVToArray } from '../utils/csv-to-array';
-import { ExpectedCSVColumns } from '../models/ExpectedCsvColumns.model';
-import { Entity, EntityRawCsv, EntitysUtils } from '../models/Entities.schema';
+import { CSVToArray } from './../utils/csv-to-array';
+import { ExpectedCSVColumns } from './../models/ExpectedCsvColumns.model';
+import { Entity, EntityRawCsv, EntitysUtils } from './../models/Entities.schema';
 
 dotenv.config({
   path: `${__dirname}/../../.env`

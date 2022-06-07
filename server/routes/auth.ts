@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { sign } from 'jsonwebtoken';
 import passport from "passport";
-import UserModel from '../models/user';
+import UserModel from './../models/user';
 import dotenv from 'dotenv';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
