@@ -12,6 +12,10 @@ export class AppComponent implements OnInit {
     return this.auth.isLoggedIn();
   }
 
+  public get theme(): boolean {
+    return this.auth.theme;
+  }
+
   constructor(
     private auth: AuthService
   ) {

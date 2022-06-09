@@ -1,4 +1,4 @@
-<div class="container-fluid d-flex p-0" style="min-height: 100vh;">
+<div class="container-fluid d-flex p-0" style="min-height: 100vh;" [ngClass]="{'dark-theme': theme}">
   <div class="d-flex flex-row col-12">
     <div class="app-navbar" style="max-width: 92px;" *ngIf="isLoggedIn">
       <app-sidebar></app-sidebar>

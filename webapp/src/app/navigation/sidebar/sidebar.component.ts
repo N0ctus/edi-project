@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidebarComponent implements OnInit {
 
-  constructor() { }
+  public get theme(): boolean {
+    return this.auth.theme;
+  }
 
-  ngOnInit(): void {
+  public set theme(value: boolean) {
+    this.auth.theme = value;
+  }
+
+  constructor(
+    private auth: AuthService,
+  ) { }
+
+  ngOnInit( ): void {
   }
 
 }

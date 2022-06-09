@@ -33,28 +33,19 @@ $primaryDark: #53539d;
 }
 
 .app-navbar {
-  background-color: #282C31;
   padding-top: 2rem;
   padding-left: 0;
   padding-right: 0;
-  border-right: solid 1px #4D4D4D;
-}
-
-.app-content {
-  background: #212427;
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 .card {
-  background: #282C31;
-  border: solid 1px #4D4D4D;
-  color: #CACACA;
   border-radius: .75rem;
 }
 
 .progress {
   border-radius: .5rem;
   height: .75rem;
-  background: #444444;
 }
 
 .progress-bar {
@@ -62,8 +53,31 @@ $primaryDark: #53539d;
   height: .75rem;
 }
 
-.jumbotron {
-  h1, p, li {
-    color: white;
+/** Dark theme **/
+
+.dark-theme {
+  .app-navbar {
+    background-color: #282C31;
+    border-right: solid 1px #4D4D4D;
+  }
+
+  .app-content {
+    background: #212427;
+  }
+
+  .card {
+    background: #282C31;
+    color: #CACACA;
+    border: solid 1px #4D4D4D;
+  }
+
+  .progress {
+    background: #444444;
+  }
+
+  .jumbotron {
+    h1, p, li {
+      color: white;
+    }
   }
 }

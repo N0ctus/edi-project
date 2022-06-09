@@ -12,6 +12,20 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  public set theme(dark: boolean) {
+    if (dark) {
+      localStorage.setItem('theme', 'dark');
+    } else {
+      localStorage.setItem('theme', 'white');
+    }
+  }
+
+  public get theme(): boolean {
+    const theme = localStorage.getItem('theme');
+    return theme && theme === 'dark' ? true : false;
+  }
+
+
   public login(email: string, password: string) {
     return this.http.post<UserAuthResponse>('http://localhost:3000/auth/login', {}, { params: { 'username': email, 'password': password } })
       .pipe(tap(res => this.setSession(res)));
