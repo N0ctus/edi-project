@@ -16,4 +16,14 @@ usersRouter.get('/', passport.authenticate('jwt', { session: false }), (req, res
       });
 });
 
+usersRouter.post('/new', passport.authenticate('jwt', { session: false }), (req, res) => {
+  if ((req?.user as any).admin) {
+    // res.send(req.body);
+    // UserModel.register({ username: 'lucid', active: false , admin: false} as any, 'geko')
+  } else {
+    res.status(403).send('Action forbidden, you are not an admin!');
+  }
+  res.json(req.body);
+});
+
 export default usersRouter;

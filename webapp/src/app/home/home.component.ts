@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NamePercentData } from '../models/NamePercentData.model';
+import { DataService } from '../services/data.service';
 import { UsersService } from '../services/users.service';
 
 @Component({
@@ -176,12 +177,12 @@ export class HomeComponent implements OnInit {
   };
 
   constructor(
-    private usersService: UsersService
+    private dataService: DataService
   ) {
   }
 
   ngOnInit(): void {
-    this.usersService.getTransactionsData().subscribe((resp: any) => {
+    this.dataService.getTransactionsData().subscribe((resp: any) => {
       const flatTransactions = resp.map((el: any) => ({ 'name': el._id.transactionType, dayOfYear: el._id.dayOfYear, count: el.count}));
       const groupedTransactions = this.groupArrayOfObjects(flatTransactions, 'name');
       const series = Object.values(groupedTransactions).map((el: any) => ({ name: el[0].name, type: 'areaspline', data: el.map((it: any) => it.count)})).filter(item => !!item.name) as any;

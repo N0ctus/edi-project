@@ -17,6 +17,8 @@ dotenv.config({
 
 const app = express();
 
+app.use(express.json());
+
 app.use(fileUpload({
   limits: { fileSize: 500 * 1024 * 1024 },
 }));

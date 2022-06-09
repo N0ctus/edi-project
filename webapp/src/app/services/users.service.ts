@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-const BACKEND_URL = `http://localhost:3000`;
+import { BACKEND_URL } from '../models/Config.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +16,12 @@ export class UsersService {
     return this.http.get<UsersResponseInterface>(`${BACKEND_URL}/users`);
   }
 
-  public getTransactionsData() {
-    return this.http.get(`${BACKEND_URL}/data/transactions`);
+  public addUser(user: {
+    username: string,
+    password: string,
+    admin: boolean,
+  }): Observable<UsersResponseInterface> {
+    return this.http.post<UsersResponseInterface>(`${BACKEND_URL}/users`, user);
   }
 }
 

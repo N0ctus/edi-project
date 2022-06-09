@@ -1,8 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-
-const BACKEND_URL = `http://localhost:3000`;
+import { BACKEND_URL } from '../models/Config.model';
 
 @Injectable({
   providedIn: 'root'
