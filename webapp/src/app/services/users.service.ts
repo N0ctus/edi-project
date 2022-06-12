@@ -16,12 +16,16 @@ export class UsersService {
     return this.http.get<UsersResponseInterface>(`${BACKEND_URL}/users`);
   }
 
+  public deleteUser(userId: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${BACKEND_URL}/users/${userId}`);
+  }
+
   public addUser(user: {
     username: string,
     password: string,
     admin: boolean,
-  }): Observable<UsersResponseInterface> {
-    return this.http.post<UsersResponseInterface>(`${BACKEND_URL}/users`, user);
+  }): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${BACKEND_URL}/users/new`, user);
   }
 }
 

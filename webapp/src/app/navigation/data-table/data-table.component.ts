@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ColDef } from 'ag-grid-community';
 import { Observable } from 'rxjs';
+import { Connection } from 'src/app/models/Connection.model';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-data-table',
@@ -11,18 +13,26 @@ import { Observable } from 'rxjs';
 export class DataTableComponent implements OnInit {
 
   columnDefs: ColDef[] = [
-    { field: 'make', sortable: true, filter: true },
-    { field: 'model', sortable: true, filter: true },
-    { field: 'price', sortable: true, filter: true }
+    { field: 'clientName', sortable: true, filter: true, },
+    { field: 'comment', sortable: true, filter: true, },
+    { field: 'connectionType', sortable: true, filter: true, },
+    { field: 'createdUser', sortable: true, filter: true, },
+    { field: 'creationDate', sortable: true, filter: true, },
+    { field: 'lastModificationDate', sortable: true, filter: true, },
+    { field: 'lastUser', sortable: true, filter: true, },
+    { field: '_id', sortable: true, filter: true, },
   ];
 
-  rowData: Observable<any[]>;
+  rowData: Connection[] = [];
 
-  constructor(private http: HttpClient) {
-    this.rowData = this.http.get<any[]>('https://www.ag-grid.com/example-assets/small-row-data.json');
+  constructor(private dataService: DataService) {
   }
 
   ngOnInit(): void {
+    this.dataService.getConnectionsRawData().subscribe((response) => {
+      console.log(response);
+      this.rowData = Object.values(response);
+    });
   }
 
 }

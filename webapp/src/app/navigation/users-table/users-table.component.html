@@ -1,9 +1,106 @@
-<div class="mt-4 d-flex">
-  <ag-grid-angular
-    style="min-height: 50vh;"
-    class="ag-theme-alpine col"
-    [rowData]="rowData"
-    [columnDefs]="columnDefs"
+<div class="container d-flex flex-column">
+  <div class="jumbotron jumbotron-fluid my-4">
+    <div class="container">
+      <h1 class="display-4">User management</h1>
+    </div>
+  </div>
+  <div class="mt-4 d-flex justify-content-end">
+    <!-- Button add user -->
+    <button
+      type="button"
+      class="d-flex align-items-center btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#addUserModal"
+      (click)="openNewUserModal(modalDirect)"
+    >
+      <span class="material-icons"> person_add </span>&nbsp; New user
+    </button>
+  </div>
+  <div class="mt-4 d-flex">
+    <ag-grid-angular
+      style="min-height: 50vh"
+      class="ag-theme-alpine col"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      [gridOptions]="gridOptions"
+    >
+    </ag-grid-angular>
+  </div>
+
+  <!-- Modal to add user -->
+  <div
+    class="modal fade"
+    id="addUserModal"
+    tabindex="-1"
+    aria-labelledby="addUserModal"
+    aria-hidden="true"
   >
-  </ag-grid-angular>
+    <div class="modal-dialog">
+      <form class="modal-content" (submit)="save()">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserModal">Add a new user</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="username" class="form-label"> Username </label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="username"
+              [(ngModel)]="username"
+              id="username"
+              name="username"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label"> Password </label>
+            <input
+              type="password"
+              [(ngModel)]="password"
+              id="password"
+              name="password"
+              class="form-control"
+              placeholder="**********"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [(ngModel)]="isAdmin"
+              id="isAdmin"
+              name="isAdmin"
+            />
+            <label for="isAdmin" class="form-label">&nbsp; Is admin? </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="submit"
+            name="save"
+            class="btn btn-primary"
+            [disabled]="!formValid"
+            (submit)="save()"
+          >
+            Save changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

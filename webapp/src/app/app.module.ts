@@ -24,6 +24,7 @@ import { TokenInterceptor } from 'auth/token.interceptor';
 
 import * as Highcharts from 'highcharts';
 import theme from 'highcharts/themes/dark-unica';
+import { BtnCellRendererComponent } from './ui/btn-cell-renderer/btn-cell-renderer.component';
 theme(Highcharts);
 
 @NgModule({
@@ -38,6 +39,7 @@ theme(Highcharts);
     UsersTableComponent,
     ImportDataComponent,
     SettingsComponent,
+    BtnCellRendererComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -47,7 +49,7 @@ theme(Highcharts);
     FlexLayoutModule,
     FormsModule,
     HighchartsChartModule,
-    AgGridModule.withComponents([]),
+    AgGridModule.withComponents([BtnCellRendererComponent]),
   ],
   providers: [
     {

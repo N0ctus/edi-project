@@ -1,9 +1,16 @@
-<div class="mt-4 d-flex">
-  <ag-grid-angular
-    style="min-height: 50vh;"
-    class="ag-theme-alpine col"
-    [rowData]="rowData | async"
-    [columnDefs]="columnDefs"
-  >
-  </ag-grid-angular>
+<div class="container d-flex flex-column">
+  <div class="jumbotron jumbotron-fluid my-4">
+    <div class="container">
+      <h1 class="display-4">Data table visualization</h1>
+    </div>
+  </div>
+  <div class="mt-4 d-flex">
+    <ag-grid-angular
+      style="min-height: 50vh"
+      class="ag-theme-alpine col"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+    >
+    </ag-grid-angular>
+  </div>
 </div>

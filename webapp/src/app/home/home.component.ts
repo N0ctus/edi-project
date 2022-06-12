@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NamePercentData } from '../models/NamePercentData.model';
-import { DataService } from '../services/data.service';
-import { UsersService } from '../services/users.service';
+import { NamePercentData } from './../models/NamePercentData.model';
+import { DataService } from './../services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -56,46 +55,7 @@ export class HomeComponent implements OnInit {
   ];
 
   public transactions: Highcharts.Options = {};
-  public topFilesExchange: Highcharts.Options = {
-    chart: {
-      plotShadow: false,
-      type: 'pie'
-    },
-    plotOptions: {
-      pie: {
-        allowPointSelect: true,
-        cursor: 'pointer',
-        dataLabels: {
-          enabled: false
-        },
-        showInLegend: true
-      }
-    },
-    legend: {
-      align: 'right'
-    },
-    title: {
-      text: 'Top files exchange for customers per document type'
-    },
-    accessibility: {
-      point: {
-        valueSuffix: '%'
-      }
-    },
-    series: [{
-      name: 'Brands',
-      type: 'pie',
-      colorByPoint: true,
-      data: [{
-        name: 'Invoice',
-        y: 14,
-      }, {
-        name: 'order',
-        y: 86,
-        selected: true,
-      },]
-    }]
-  };
+  public topFilesExchange: Highcharts.Options = {};
   public errors: Highcharts.Options = {
     chart: {
       type: 'column',
@@ -182,7 +142,57 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataService.getTransactionsData().subscribe((resp: any) => {
+    this.getTransactionsDataChart();
+    this.dataService.getConnectionsChartData().subscribe((resp) => {
+      const chartData = resp.map(item => ({
+        name: item._id.connectionType,
+        y: item.count,
+      }));
+      this.topFilesExchange = {
+        chart: {
+          plotShadow: false,
+          type: 'pie'
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: false
+            },
+            showInLegend: true
+          }
+        },
+        legend: {
+          align: 'right'
+        },
+        title: {
+          text: 'Top files exchange for customers per document type'
+        },
+        accessibility: {
+          point: {
+            valueSuffix: '%'
+          }
+        },
+        series: [{
+          name: 'Brands',
+          type: 'pie',
+          colorByPoint: true,
+          data: chartData,
+        }]
+      };
+    });
+  }
+
+  groupArrayOfObjects(list: Array<any>, key: string) {
+    return list.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  }
+
+  getTransactionsDataChart() {
+    this.dataService.getTransactionsChartData().subscribe((resp: any) => {
       const flatTransactions = resp.map((el: any) => ({ 'name': el._id.transactionType, dayOfYear: el._id.dayOfYear, count: el.count}));
       const groupedTransactions = this.groupArrayOfObjects(flatTransactions, 'name');
       const series = Object.values(groupedTransactions).map((el: any) => ({ name: el[0].name, type: 'areaspline', data: el.map((it: any) => it.count)})).filter(item => !!item.name) as any;
@@ -206,13 +216,6 @@ export class HomeComponent implements OnInit {
         series: series,
       };
     });
-  }
-
-  groupArrayOfObjects(list: Array<any>, key: string) {
-    return list.reduce(function(rv, x) {
-      (rv[x[key]] = rv[x[key]] || []).push(x);
-      return rv;
-    }, {});
   }
 
 }
