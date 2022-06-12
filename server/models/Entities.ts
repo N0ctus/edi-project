@@ -1,3 +1,4 @@
+import moment from "moment";
 import { model, Schema } from "mongoose";
 
 // Our Entity schema model as it will be saved in the database
@@ -46,8 +47,8 @@ export class EntitysUtils {
             entityClassReference: item.CENTITYCLASSREF,
             clientName: item.CNAME,
             comment: item.CCOMMENT,
-            created: item.CCREATED,
-            lastModified: item.CLASTMODIFIED,
+            created: moment(item.CCREATED, "DD-MMM-YY hh.mm.ss.SSSSSS A").toISOString(),
+            lastModified: moment(item.CLASTMODIFIED, "DD-MMM-YY hh.mm.ss.SSSSSS A").toISOString(),
             createdUser: item.CCREATEUSER,
             lastUser: item.CLASTUSER,
             entityType: item.CKEY,

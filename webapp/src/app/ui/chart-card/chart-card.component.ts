@@ -22,7 +22,6 @@ export class ChartCardComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['chartOptions']) {
       this.updated = true;
-      console.log(changes['chartOptions'])
     }
   }
 }

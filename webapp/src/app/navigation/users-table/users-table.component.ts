@@ -66,7 +66,6 @@ export class UsersTableComponent implements OnInit {
   }
 
   save() {
-    console.log(this.username, this.password, this.isAdmin);
     this.usersService.addUser({
       username: this.username,
       password: this.password,

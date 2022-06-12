@@ -9,7 +9,6 @@ import { ICellRendererParams } from 'ag-grid-community';
 })
 export class BtnCellRendererComponent implements ICellRendererAngularComp {
   refresh(params: ICellRendererParams): boolean {
-    console.log('Refresh called', params);
     return true;
   }
   private params: any;

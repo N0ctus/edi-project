@@ -1,3 +1,4 @@
+import moment from "moment";
 import { model, Schema } from "mongoose";
 
 // Our transactions schema model as it will be saved in the database
@@ -35,8 +36,8 @@ export class TransactionsUtils {
     public static convertCsvToSchema(input: TransactionsRawCsv[]): TransactionsSchema[] {
         return input.map(item => ({
             _id: item.BPIA_ID,
-            startTime: item.BPIA_STARTTIME,
-            lastAction: item.BPIA_LASTACTION,
+            startTime: moment(item.BPIA_STARTTIME, "MM/DD/YYYYY hh:mm:ss A").toISOString(),
+            lastAction: moment(item.BPIA_LASTACTION, "MM/DD/YYYYY hh:mm:ss A").toISOString(),
             documentName: item.BPIA_DOKUMENT,
             transactionType: item.BPIA_TYP,
             entityName: item.BPIA_ENTITYNAME,

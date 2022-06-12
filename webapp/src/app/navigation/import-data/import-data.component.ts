@@ -43,7 +43,6 @@ export class ImportDataComponent implements OnInit {
     this.fileReader.onload = ((ev) => {
       this.loading = false;
       this.parsedCSV = CSVToArray(ev.target?.result as string);
-      console.log(this.parsedCSV);
       if (this.parsedCSV.length > 0 && this.parsedCSV[0].length === this.expectedCsvColumns) {
         this.fileInfo = "The file is valid and ready to be imported!";
       } else {
@@ -81,14 +80,11 @@ export class ImportDataComponent implements OnInit {
       ).subscribe((event: HttpEvent<any>) => {
         switch (event.type) {
           case HttpEventType.Sent:
-            console.log('Request has been made!');
             break;
           case HttpEventType.ResponseHeader:
-            console.log('Response header has been received!');
             break;
           case HttpEventType.UploadProgress:
             this.progress = Math.round(event.loaded / (event?.total || 1 ) * 100);
-            console.log(`Uploaded! ${this.progress}%`);
             break;
           case HttpEventType.Response:
             this.fileSuccess = 'The file has been successfully uploaded!';

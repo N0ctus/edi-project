@@ -9,10 +9,10 @@ import { NamePercentData } from 'src/app/models/NamePercentData.model';
 export class CardComponent implements OnInit {
 
   @Input()
-  public title: string = '';
+  public title: string | undefined;
 
   @Input()
-  public namePercentData: NamePercentData[] = [];
+  public namePercentData: NamePercentData[] | undefined;
 
   constructor() { }
 

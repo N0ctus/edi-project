@@ -1,3 +1,4 @@
+import moment from "moment";
 import { model, Schema } from "mongoose";
 
 // Our connection schema model as it will be saved in the database
@@ -58,8 +59,8 @@ export class ConnectionsUtils {
             clientName: item.CNAME,
             connectionType: item.CDETAILSTYPE,
             comment: item.CCOMMENT,
-            creationDate: item.CCREATED,
-            lastModificationDate: item.CLASTMODIFIED,
+            creationDate: moment(item.CCREATED, "DD-MMM-YY hh.mm.ss.SSSSSS A").toISOString(),
+            lastModificationDate: moment(item.CLASTMODIFIED, "DD-MMM-YY hh.mm.ss.SSSSSS A").toISOString(),
             createdUser: item.CCREATEUSER,
             lastUser: item.CLASTUSER,
         }));

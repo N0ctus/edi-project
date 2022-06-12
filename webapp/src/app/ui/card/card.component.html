@@ -1,10 +1,10 @@
 <template class="card m-auto">
-  <div class="card-body">
+  <div class="card-body" *ngIf="namePercentData">
     <h5 class="card-title">{{ title }}</h5>
     <div *ngFor="let partner of namePercentData">
       <div class="row">
         <div class="col mb-2">{{ partner.name }}</div>
-        <div class="col text-end text-muted">{{ partner.percent }}</div>
+        <div class="col text-end text-muted">{{ partner.percent.toFixed(2) }}%</div>
       </div>
       <div class="progress mb-2">
         <div
@@ -13,6 +13,24 @@
           [style.width]="partner.percent + '%'"
         ></div>
       </div>
+    </div>
+  </div>
+  <!-- Loading UI -->
+  <div class="card-body skeleton d-flex flex-column" *ngIf="!namePercentData">
+    <div class="col-12 d-flex justify-content-center">
+      <span class="material-icons loading"> refresh </span>
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+      <div>Loading...</div>
+    </div>
+  </div>
+  <!-- No data -->
+  <div class="card-body skeleton d-flex flex-column" *ngIf="namePercentData?.length === 0">
+    <div class="col-12 d-flex justify-content-center">
+      <span class="material-icons"> cloud_off </span>
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+      <div>No data found currently.</div>
     </div>
   </div>
 </template>
