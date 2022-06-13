@@ -34,10 +34,25 @@ export class DataService {
   public getConnectionsRawData(): Observable<ConnectionsResponseInterface> {
     return this.http.get<ConnectionsResponseInterface>(`${BACKEND_URL}/data/connections`);
   }
+  public getTransactionsRawData(): Observable<ConnectionsResponseInterface> {
+    return this.http.get<ConnectionsResponseInterface>(`${BACKEND_URL}/data/transactions`);
+  }
+  public getEntitiesRawData(): Observable<ConnectionsResponseInterface> {
+    return this.http.get<ConnectionsResponseInterface>(`${BACKEND_URL}/data/entities`);
+  }
+  public getPartnersRawData(): Observable<ConnectionsResponseInterface> {
+    return this.http.get<ConnectionsResponseInterface>(`${BACKEND_URL}/data/partners`);
+  }
 
   /** Top widgets data */
   public getTopTransactionsEntityNames(): Observable<TopTransactionsEntityNamesResponse[]> {
     return this.http.get<TopTransactionsEntityNamesResponse[]>(`${BACKEND_URL}/data/transactions/top-entities`);
+  }
+  public getTopCustomersPartners(): Observable<TopCustomersPartnersResponse[]> {
+    return this.http.get<TopCustomersPartnersResponse[]>(`${BACKEND_URL}/data/partners/top-customers`);
+  }
+  public getTopOwnersPartners(): Observable<TopOwnersPartnersResponse[]> {
+    return this.http.get<TopOwnersPartnersResponse[]>(`${BACKEND_URL}/data/partners/top-owners`);
   }
 
 }
@@ -50,5 +65,19 @@ export interface TopTransactionsEntityNamesResponse {
   totalPercent: number;
   _id: {
     entityName: string;
+  };
+}
+
+export interface TopCustomersPartnersResponse {
+  totalPercent: number;
+  _id: {
+    clientName: string;
+  };
+}
+
+export interface TopOwnersPartnersResponse {
+  totalPercent: number;
+  _id: {
+    clientName: string;
   };
 }

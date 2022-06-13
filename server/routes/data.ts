@@ -7,8 +7,14 @@ import { Transaction } from "../models/Transactions";
 
 const dataRouter = Router();
 
+/** Data table endpoints */
+// https://stackoverflow.com/questions/53518160/ag-grid-server-side-pagination-filter-sort-data
 dataRouter.get('/connections', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Connection.find({}, (err, item) => {
+  // Access the provided 'page' and 'limt' query parameters
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 1000;
+  const query = Connection.find({}).skip(limit * page).limit(limit);
+  query.exec((err, item) => {
     const connectionsMap = {};
 
     item.forEach((item) => {
@@ -18,6 +24,44 @@ dataRouter.get('/connections', passport.authenticate('jwt', { session: false }),
     res.send(connectionsMap);
   });
 });
+
+dataRouter.get('/transactions', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Transaction.find({}, (err, item) => {
+    const transactionsMap = {};
+
+    item.forEach((item) => {
+      transactionsMap[item._id] = item;
+    });
+
+    res.send(transactionsMap);
+  });
+});
+
+dataRouter.get('/entities', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Entity.find({}, (err, item) => {
+    const entitiesMap = {};
+
+    item.forEach((item) => {
+      entitiesMap[item._id] = item;
+    });
+
+    res.send(entitiesMap);
+  });
+});
+
+dataRouter.get('/partners', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Partner.find({}, (err, item) => {
+    const partnersMap = {};
+
+    item.forEach((item) => {
+      partnersMap[item._id] = item;
+    });
+
+    res.send(partnersMap);
+  });
+});
+
+/** Chart endpoints */
 
 dataRouter.get('/chart-data/connections', passport.authenticate('jwt', { session: false }), (req, res) => {
   //query with mongoose
@@ -37,46 +81,6 @@ dataRouter.get('/chart-data/connections', passport.authenticate('jwt', { session
     } else {
       res.send(result);
     }
-  });
-});
-
-dataRouter.get('/transactions', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Transaction.find({}, (err, item) => {
-    const transactionsMap = {};
-
-    item.forEach((item) => {
-      transactionsMap[item._id] = item;
-    });
-
-    res.send(transactionsMap);
-  });
-});
-
-dataRouter.get('/transactions/top-entities', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Transaction.count({}, (err, count) => {
-    Transaction.aggregate([
-      {
-        $group: {
-          _id: {
-            entityName: "$entityName",
-          },
-          count: { $sum: 1 },
-        },
-      },
-      {
-        "$project": {
-          totalPercent: { $multiply: ["$count", 100 / count] },
-        }
-      },
-      { $sort: { "totalPercent": -1 } },
-      { $limit: 3 },
-    ], (err, result) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.send(result);
-      }
-    });
   });
 });
 
@@ -130,30 +134,6 @@ dataRouter.get('/chart-data/entities', passport.authenticate('jwt', { session: f
   });
 });
 
-dataRouter.get('/entities', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Entity.find({}, (err, item) => {
-    const entitiesMap = {};
-
-    item.forEach((item) => {
-      entitiesMap[item._id] = item;
-    });
-
-    res.send(entitiesMap);
-  });
-});
-
-dataRouter.get('/partners', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Partner.find({}, (err, item) => {
-    const partnersMap = {};
-
-    item.forEach((item) => {
-      partnersMap[item._id] = item;
-    });
-
-    res.send(partnersMap);
-  });
-});
-
 dataRouter.get('/chart-data/partners', passport.authenticate('jwt', { session: false }), (req, res) => {
   const query = Partner.aggregate([
     {
@@ -182,5 +162,102 @@ dataRouter.get('/chart-data/partners', passport.authenticate('jwt', { session: f
     }
   });
 });
+
+/** Stats/progress bars endpoints */
+
+dataRouter.get('/partners/top-owners', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Partner.count({}, (err, count) => {
+    Partner.aggregate([
+      {
+        '$match': {
+          clientType: 'own'
+        }
+      },
+      {
+        $group: {
+          _id: {
+            clientName: "$clientName",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        "$project": {
+          totalPercent: { $multiply: ["$count", 100 / count] },
+        }
+      },
+      { $sort: { "totalPercent": -1 } },
+      { $limit: 3 },
+    ], (err, result) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.send(result);
+      }
+    });
+  });
+});
+
+dataRouter.get('/partners/top-customers', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Partner.count({}, (err, count) => {
+    Partner.aggregate([
+      {
+        '$match': {
+          clientType: 'partner'
+        }
+      },
+      {
+        $group: {
+          _id: {
+            clientName: "$clientName",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        "$project": {
+          totalPercent: { $multiply: ["$count", 100 / count] },
+        }
+      },
+      { $sort: { "totalPercent": -1 } },
+      { $limit: 3 },
+    ], (err, result) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.send(result);
+      }
+    });
+  });
+});
+
+dataRouter.get('/transactions/top-entities', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Transaction.count({}, (err, count) => {
+    Transaction.aggregate([
+      {
+        $group: {
+          _id: {
+            entityName: "$entityName",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        "$project": {
+          totalPercent: { $multiply: ["$count", 100 / count] },
+        }
+      },
+      { $sort: { "totalPercent": -1 } },
+      { $limit: 3 },
+    ], (err, result) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.send(result);
+      }
+    });
+  });
+});
+
 
 export default dataRouter;

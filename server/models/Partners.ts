@@ -31,7 +31,7 @@ export class PartnersUtils {
     public static convertCsvToSchema(input: PartnersRawCsv[]): PartnersSchema[] {
         return input.map(item => ({
             _id: item.CID,
-            clientName: item.CNAME,
+            clientName: PartnersUtils.convertClientName(item.CNAME),
             clientType: item.CADDRESSUSAGE,
             created: moment(item.CCREATED, "DD-MMM-YY hh.mm.ss.SSSSSS A").toISOString(),
             lastModified: moment(item.CLASTMODIFIED, "DD-MMM-YY hh.mm.ss.SSSSSS A").toISOString(),
@@ -53,6 +53,17 @@ export class PartnersUtils {
             CENV: row[8],
             CIDENTITY: row[9],
         };
+    }
+
+    public static convertClientName(name: string) {
+        const filterExp = /^[^\s_]+/;
+        if (name) {
+            const splicedName = filterExp.exec(name);
+            if (splicedName && splicedName?.[0] !== '') {
+                return splicedName[0];
+            }
+        }
+        return 'Unknown';
     }
 }
 

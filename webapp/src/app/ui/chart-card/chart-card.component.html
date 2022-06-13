@@ -1,11 +1,18 @@
 <template class="card m-auto">
-  <div class="card-body" *ngIf="chartOptions !== undefined && chartOptions?.chart !== undefined">
+  <div
+    class="card-body"
+    *ngIf="
+      chartOptions !== undefined &&
+      chartOptions &&
+      chartOptions.series &&
+      chartOptions.series.length > 0
+    "
+  >
     <highcharts-chart
       [Highcharts]="Highcharts"
       [options]="chartOptions"
       [(update)]="updated"
-
-      style="width: 100%; height: 400px; display: block;"
+      style="width: 100%; height: 400px; display: block"
     ></highcharts-chart>
   </div>
   <!-- Loading -->
@@ -20,7 +27,16 @@
     </div>
   </div>
   <!-- No data -->
-  <div class="card-body skeleton d-flex flex-column my-4 py-4" *ngIf="chartOptions !== undefined && chartOptions?.chart === undefined">
+  <div
+    class="card-body skeleton d-flex flex-column my-4 py-4"
+    *ngIf="
+      chartOptions !== undefined &&
+      ((chartOptions &&
+        chartOptions.series &&
+        chartOptions.series.length === 0) ||
+        chartOptions?.chart === undefined)
+    "
+  >
     <div class="col-12 d-flex justify-content-center">
       <span class="material-icons"> cloud_off </span>
     </div>

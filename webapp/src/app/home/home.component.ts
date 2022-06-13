@@ -9,35 +9,9 @@ import { DataService } from './../services/data.service';
 })
 export class HomeComponent implements OnInit {
 
-  public partnerList: NamePercentData[] = [
-    {
-      name: 'VW',
-      percent: 50,
-    },
-    {
-      name: 'BMW',
-      percent: 20,
-    },
-    {
-      name: 'Fiat',
-      percent: 10,
-    },
-  ];
+  public partnerList: NamePercentData[] | undefined;
 
-  public topSuppliers: NamePercentData[] = [
-    {
-      name: 'Kuehne-nagel',
-      percent: 30,
-    },
-    {
-      name: 'Grammer',
-      percent: 20,
-    },
-    {
-      name: 'Audio-OHM',
-      percent: 13,
-    },
-  ];
+  public topSuppliers: NamePercentData[] | undefined;
 
   public topJis: NamePercentData[] | undefined;
 
@@ -58,6 +32,8 @@ export class HomeComponent implements OnInit {
     this.getPartnersDataChart();
 
     this.getTopTransactionEntities();
+    this.getTopCustomersPartners();
+    this.getTopOwnersPartners();
   }
 
   groupArrayOfObjects(list: Array<any>, key: string) {
@@ -98,85 +74,147 @@ export class HomeComponent implements OnInit {
 
   getEntitiesDataChart() {
     this.dataService.getEntityChartData().subscribe((resp) => {
-      const chartData = resp.map(item => ({
-        name: item._id.entityClassReference,
-        y: item.count,
-      }));
-      this.topMessagesExchange = {
-        chart: {
-          plotShadow: false,
-          type: 'pie'
-        },
-        plotOptions: {
-          pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-              enabled: false
-            },
-            showInLegend: true
-          }
-        },
-        legend: {
-          align: 'right'
-        },
-        title: {
-          text: 'Entity class types'
-        },
-        accessibility: {
-          point: {
-            valueSuffix: '%'
-          }
-        },
-        series: [{
-          name: 'Brands',
-          type: 'pie',
-          colorByPoint: true,
-          data: chartData,
-        }]
-      };
+      if (resp.length > 0) {
+        const chartData = resp.map(item => ({
+          name: item._id.entityClassReference,
+          y: item.count,
+        }));
+        this.topMessagesExchange = {
+          chart: {
+            plotShadow: false,
+            type: 'pie'
+          },
+          plotOptions: {
+            pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                enabled: false
+              },
+              showInLegend: true
+            }
+          },
+          legend: {
+            align: 'right'
+          },
+          title: {
+            text: 'Entity class types'
+          },
+          accessibility: {
+            point: {
+              valueSuffix: '%'
+            }
+          },
+          series: [{
+            name: 'Brands',
+            type: 'pie',
+            colorByPoint: true,
+            data: chartData,
+          }]
+        };
+      } else {
+        this.topMessagesExchange = {
+          chart: {
+            plotShadow: false,
+            type: 'pie'
+          },
+          plotOptions: {
+            pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                enabled: false
+              },
+              showInLegend: true
+            }
+          },
+          legend: {
+            align: 'right'
+          },
+          title: {
+            text: 'Entity class types'
+          },
+          accessibility: {
+            point: {
+              valueSuffix: '%'
+            }
+          },
+          series: []
+        };
+      }
     }, err => this.topMessagesExchange = {});
   }
 
   getConnectionsDataChart() {
     this.dataService.getConnectionsChartData().subscribe((resp) => {
-      const chartData = resp.map(item => ({
-        name: item._id.connectionType,
-        y: item.count,
-      }));
-      this.topFilesExchange = {
-        chart: {
-          plotShadow: false,
-          type: 'pie'
-        },
-        plotOptions: {
-          pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-              enabled: false
-            },
-            showInLegend: true
-          }
-        },
-        legend: {
-          align: 'right'
-        },
-        title: {
-          text: 'Protocol per connection log'
-        },
-        accessibility: {
-          point: {
-            valueSuffix: '%'
-          }
-        },
-        series: [{
-          name: 'Brands',
-          type: 'pie',
-          colorByPoint: true,
-          data: chartData,
-        }]
-      };
+      if (resp.length > 0) {
+        const chartData = resp.map(item => ({
+          name: item._id.connectionType,
+          y: item.count,
+        }));
+        this.topFilesExchange = {
+          chart: {
+            plotShadow: false,
+            type: 'pie'
+          },
+          plotOptions: {
+            pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                enabled: false
+              },
+              showInLegend: true
+            }
+          },
+          legend: {
+            align: 'right'
+          },
+          title: {
+            text: 'Protocol per connection log'
+          },
+          accessibility: {
+            point: {
+              valueSuffix: '%'
+            }
+          },
+          series: [{
+            name: 'Brands',
+            type: 'pie',
+            colorByPoint: true,
+            data: chartData,
+          }]
+        };
+      } else {
+        this.topFilesExchange = {
+          chart: {
+            plotShadow: false,
+            type: 'pie'
+          },
+          plotOptions: {
+            pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                enabled: false
+              },
+              showInLegend: true
+            }
+          },
+          legend: {
+            align: 'right'
+          },
+          title: {
+            text: 'Protocol per connection log'
+          },
+          accessibility: {
+            point: {
+              valueSuffix: '%'
+            }
+          },
+          series: []
+        };
+      }
     }, err => this.topFilesExchange = {});
   }
 
@@ -213,6 +251,16 @@ export class HomeComponent implements OnInit {
     this.dataService.getTopTransactionsEntityNames().subscribe(resp => {
       this.topJis = resp.map(el => ({ name: el._id.entityName, percent: el.totalPercent }));
     }, err => this.topJis = []);
+  }
+  getTopCustomersPartners() {
+    this.dataService.getTopCustomersPartners().subscribe(resp => {
+      this.partnerList = resp.map(el => ({ name: el._id.clientName, percent: el.totalPercent }));
+    }, err => this.partnerList = []);
+  }
+  getTopOwnersPartners() {
+    this.dataService.getTopOwnersPartners().subscribe(resp => {
+      this.topSuppliers = resp.map(el => ({ name: el._id.clientName, percent: el.totalPercent }));
+    }, err => this.topSuppliers = []);
   }
 
 }

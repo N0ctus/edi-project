@@ -1,6 +1,6 @@
 <template class="card m-auto">
   <div class="card-body" *ngIf="namePercentData">
-    <h5 class="card-title">{{ title }}</h5>
+    <h5 class="card-title" *ngIf="namePercentData && namePercentData.length > 0">{{ title }}</h5>
     <div *ngFor="let partner of namePercentData">
       <div class="row">
         <div class="col mb-2">{{ partner.name }}</div>

@@ -9,7 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { DataTableComponent } from './navigation/data-table/data-table.component';
 import { UsersTableComponent } from './navigation/users-table/users-table.component';
 import { ImportDataComponent } from './navigation/import-data/import-data.component';
-import { SettingsComponent } from './navigation/settings/settings.component';
+import { LogoutComponent } from './navigation/logout/logout.component';
 
 const routes: Routes = [
   { path: '*', redirectTo: 'dashboard' },
@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'data-table', component : DataTableComponent, canActivate : [AuthGuard]},
   { path: 'users', component : UsersTableComponent, canActivate : [AuthGuard]},
   { path: 'import', component : ImportDataComponent, canActivate : [AuthGuard]},
-  { path: 'settings', component : SettingsComponent, canActivate : [AuthGuard]},
+  { path: 'logout', component : LogoutComponent, canActivate : [AuthGuard]},
 ];
 
 @NgModule({
