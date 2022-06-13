@@ -23,9 +23,9 @@ import { SettingsComponent } from './navigation/settings/settings.component';
 import { TokenInterceptor } from 'auth/token.interceptor';
 
 import * as Highcharts from 'highcharts';
-import theme from 'highcharts/themes/dark-unica';
+// import theme from 'highcharts/themes/dark-unica';
 import { BtnCellRendererComponent } from './ui/btn-cell-renderer/btn-cell-renderer.component';
-theme(Highcharts);
+// theme(Highcharts);
 
 @NgModule({
   declarations: [

@@ -1,10 +1,16 @@
 @import "~bootstrap/dist/css/bootstrap.css";
-@import 'material-icons/iconfont/material-icons.css';
+@import "material-icons/iconfont/material-icons.css";
 @import "ag-grid-community/dist/styles/ag-grid.css";
 @import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 $primary: #7f7fd5;
 $primaryDark: #53539d;
@@ -15,7 +21,8 @@ $primaryDark: #53539d;
   background-color: $primary;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
   background-color: $primary;
 }
 
@@ -28,8 +35,20 @@ $primaryDark: #53539d;
   border-color: $primary;
 }
 
-.nav-link:hover, .nav-link:focus {
+.nav-link:hover,
+.nav-link:focus {
   color: $primaryDark;
+}
+
+.btn-primary {
+  background-color: $primary;
+  border-color: $primaryDark;
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+  background-color: $primary;
+  border-color: $primaryDark;
 }
 
 .app-navbar {
@@ -40,25 +59,25 @@ $primaryDark: #53539d;
 }
 
 .card {
-  border-radius: .75rem;
+  border-radius: 0.75rem;
 }
 
 .progress {
-  border-radius: .5rem;
-  height: .75rem;
+  border-radius: 0.5rem;
+  height: 0.75rem;
 }
 
 .progress-bar {
-  border-radius: .5rem;
-  height: .75rem;
+  border-radius: 0.5rem;
+  height: 0.75rem;
 }
 
 /** Dark theme **/
 
 .dark-theme {
   .app-navbar {
-    background-color: #282C31;
-    border-right: solid 1px #4D4D4D;
+    background-color: #282c31;
+    border-right: solid 1px #4d4d4d;
   }
 
   .app-content {
@@ -66,9 +85,28 @@ $primaryDark: #53539d;
   }
 
   .card {
-    background: #282C31;
-    color: #CACACA;
-    border: solid 1px #4D4D4D;
+    background: #282c31;
+    color: #cacaca;
+    border: solid 1px #4d4d4d;
+  }
+
+  .ag-theme-alpine .ag-header {
+    background: #282c31;
+    border: solid 1px #4d4d4d;
+    .ag-header-cell-text {
+      color: #cacaca;
+    }
+  }
+
+  .ag-theme-alpine .ag-root-wrapper {
+    border: solid 1px #4d4d4d;
+    background: #282c31;
+  }
+
+  .ag-theme-alpine .ag-row {
+    color: #cacaca;
+    background: #282c31;
+    border-bottom: solid 1px #4d4d4d;
   }
 
   .progress {
@@ -76,9 +114,15 @@ $primaryDark: #53539d;
   }
 
   .jumbotron {
-    h1, p, li {
+    h1,
+    p,
+    li {
       color: white;
     }
+  }
+
+  highcharts-chart svg {
+    filter: invert(0.85);
   }
 }
 
@@ -86,11 +130,11 @@ $primaryDark: #53539d;
 
 @keyframes spinner {
   0% {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
 
   100% {
-      transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
