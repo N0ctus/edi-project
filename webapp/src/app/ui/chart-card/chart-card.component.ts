@@ -17,7 +17,7 @@ export class ChartCardComponent implements OnChanges {
   public title: string = '';
 
   @Input()
-  public chartOptions: Highcharts.Options = {};
+  public chartOptions: Highcharts.Options | undefined;
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['chartOptions']) {

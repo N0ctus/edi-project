@@ -41,10 +41,10 @@ export class HomeComponent implements OnInit {
 
   public topJis: NamePercentData[] | undefined;
 
-  public transactions: Highcharts.Options = {};
-  public topFilesExchange: Highcharts.Options = {};
-  public errors: Highcharts.Options = {};
-  public topMessagesExchange: Highcharts.Options = {};
+  public transactions: Highcharts.Options | undefined;
+  public topFilesExchange: Highcharts.Options | undefined;
+  public errors: Highcharts.Options | undefined;
+  public topMessagesExchange: Highcharts.Options | undefined;
 
   constructor(
     private dataService: DataService
@@ -93,7 +93,7 @@ export class HomeComponent implements OnInit {
         },
         series: series,
       }
-    });
+    }, err => this.transactions = {});
   }
 
   getEntitiesDataChart() {
@@ -135,7 +135,7 @@ export class HomeComponent implements OnInit {
           data: chartData,
         }]
       };
-    });
+    }, err => this.topMessagesExchange = {});
   }
 
   getConnectionsDataChart() {
@@ -177,7 +177,7 @@ export class HomeComponent implements OnInit {
           data: chartData,
         }]
       };
-    });
+    }, err => this.topFilesExchange = {});
   }
 
   getPartnersDataChart() {
@@ -204,7 +204,7 @@ export class HomeComponent implements OnInit {
         },
         series: series,
       };
-    });
+    }, err => this.errors = {});
   }
 
   /** Get top widgets data */
@@ -212,7 +212,7 @@ export class HomeComponent implements OnInit {
   getTopTransactionEntities() {
     this.dataService.getTopTransactionsEntityNames().subscribe(resp => {
       this.topJis = resp.map(el => ({ name: el._id.entityName, percent: el.totalPercent }));
-    });
+    }, err => this.topJis = []);
   }
 
 }

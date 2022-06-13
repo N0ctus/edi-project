@@ -1,8 +1,8 @@
-<template class="d-flex flex-column">
+<template class="d-flex flex-column" style="height: 100%;">
   <a href="/" class="d-block p-0 link-dark text-decoration-none d-flex justify-content-center mb-2">
     <img src="./assets/brand-logo.jpg" width="64px" class="rounded-circle" />
   </a>
-  <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+  <ul class="nav nav-pills nav-flush d-flex flex-column mb-auto text-center mt-4" style="height: 100%;">
     <li class="nav-item">
       <a routerLink="/dashboard" class="nav-link py-3" routerLinkActive="active">
         <span class="material-icons fs-1">insights</span>
@@ -23,9 +23,9 @@
         <span class="material-icons fs-1">upload_file</span>
       </a>
     </li>
-    <li>
+    <li class="mt-auto">
       <a routerLink="/settings" class="nav-link py-3" routerLinkActive="active">
-        <span class="material-icons fs-1">settings</span>
+        <span class="material-icons fs-1">logout</span>
       </a>
     </li>
     <li>

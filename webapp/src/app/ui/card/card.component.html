@@ -16,7 +16,7 @@
     </div>
   </div>
   <!-- Loading UI -->
-  <div class="card-body skeleton d-flex flex-column" *ngIf="!namePercentData">
+  <div class="card-body skeleton d-flex flex-column my-4 py-4" *ngIf="!namePercentData">
     <div class="col-12 d-flex justify-content-center">
       <span class="material-icons loading"> refresh </span>
     </div>
@@ -25,7 +25,7 @@
     </div>
   </div>
   <!-- No data -->
-  <div class="card-body skeleton d-flex flex-column" *ngIf="namePercentData?.length === 0">
+  <div class="card-body skeleton d-flex flex-column my-4 py-4" *ngIf="namePercentData?.length === 0">
     <div class="col-12 d-flex justify-content-center">
       <span class="material-icons"> cloud_off </span>
     </div>
