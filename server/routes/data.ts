@@ -1,12 +1,9 @@
 import { Router } from "express";
-import moment from "moment";
 import passport from "passport";
 import { Connection } from "../models/Connections";
 import { Entity } from "../models/Entities";
 import { Partner } from "../models/Partners";
 import { Transaction } from "../models/Transactions";
-
-require('mongodb-moment')(moment);
 
 const dataRouter = Router();
 
