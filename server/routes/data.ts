@@ -10,10 +10,10 @@ const dataRouter = Router();
 /** Data table endpoints */
 // https://stackoverflow.com/questions/53518160/ag-grid-server-side-pagination-filter-sort-data
 dataRouter.get('/connections', passport.authenticate('jwt', { session: false }), (req, res) => {
-  // Access the provided 'page' and 'limt' query parameters
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 1000;
-  const query = Connection.find({}).skip(limit * page).limit(limit);
+  // Access the provided 'page' and 'limit' query parameters
+  const start = parseInt(req.query.start as string);
+  const limit = parseInt(req.query.limit as string);
+  const query = Connection.find({}).skip(start).limit(limit);
   query.exec((err, item) => {
     const connectionsMap = {};
 
@@ -21,43 +21,62 @@ dataRouter.get('/connections', passport.authenticate('jwt', { session: false }),
       connectionsMap[item._id] = item;
     });
 
-    res.send(connectionsMap);
+    res.send(Object.values(connectionsMap));
+  });
+});
+
+dataRouter.get('/connections/count', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const query = Connection.count({});
+  query.exec((err, count) => {
+    res.send({ count });
   });
 });
 
 dataRouter.get('/transactions', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Transaction.find({}, (err, item) => {
+  // Access the provided 'page' and 'limit' query parameters
+  const start = parseInt(req.query.start as string);
+  const limit = parseInt(req.query.limit as string);
+  const query = Transaction.find({}).skip(start).limit(limit);
+  query.exec((err, item) => {
     const transactionsMap = {};
 
     item.forEach((item) => {
       transactionsMap[item._id] = item;
     });
 
-    res.send(transactionsMap);
+    res.send(Object.values(transactionsMap));
   });
 });
 
 dataRouter.get('/entities', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Entity.find({}, (err, item) => {
+  // Access the provided 'page' and 'limit' query parameters
+  const start = parseInt(req.query.start as string);
+  const limit = parseInt(req.query.limit as string);
+  const query = Entity.find({}).skip(start).limit(limit);
+  query.exec((err, item) => {
+    const entityMap = {};
+
+    item.forEach((item) => {
+      entityMap[item._id] = item;
+    });
+
+    res.send(Object.values(entityMap));
+  });
+});
+
+dataRouter.get('/partners', passport.authenticate('jwt', { session: false }), (req, res) => {
+  // Access the provided 'page' and 'limit' query parameters
+  const start = parseInt(req.query.start as string);
+  const limit = parseInt(req.query.limit as string);
+  const query = Partner.find({}).skip(start).limit(limit);
+  query.exec((err, item) => {
     const entitiesMap = {};
 
     item.forEach((item) => {
       entitiesMap[item._id] = item;
     });
 
-    res.send(entitiesMap);
-  });
-});
-
-dataRouter.get('/partners', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Partner.find({}, (err, item) => {
-    const partnersMap = {};
-
-    item.forEach((item) => {
-      partnersMap[item._id] = item;
-    });
-
-    res.send(partnersMap);
+    res.send(Object.values(entitiesMap));
   });
 });
 

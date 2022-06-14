@@ -6,9 +6,10 @@
   </div>
   <div class="mt-4 d-flex">
     <ag-grid-angular
+      [gridOptions]="gridOptions"
       style="min-height: 50vh"
+      (gridReady)="onGridReady($event)"
       class="ag-theme-alpine col"
-      [rowData]="rowData"
       [columnDefs]="columnDefs"
     >
     </ag-grid-angular>

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EntityChartDataResponse } from '../models/Entity.model';
 import { BACKEND_URL } from './../models/Config.model';
-import { Connection, ConnectionChartDataResponse } from './../models/Connection.model';
+import { ConnectionChartDataResponse } from './../models/Connection.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,17 +31,17 @@ export class DataService {
 
   /** Data-tables data */
 
-  public getConnectionsRawData(): Observable<ConnectionsResponseInterface> {
-    return this.http.get<ConnectionsResponseInterface>(`${BACKEND_URL}/data/connections`);
+  public getConnectionsRawData(): Observable<DataTableResponse> {
+    return this.http.get<DataTableResponse>(`${BACKEND_URL}/data/connections`);
   }
-  public getTransactionsRawData(): Observable<ConnectionsResponseInterface> {
-    return this.http.get<ConnectionsResponseInterface>(`${BACKEND_URL}/data/transactions`);
+  public getTransactionsRawData(): Observable<DataTableResponse> {
+    return this.http.get<DataTableResponse>(`${BACKEND_URL}/data/transactions`);
   }
-  public getEntitiesRawData(): Observable<ConnectionsResponseInterface> {
-    return this.http.get<ConnectionsResponseInterface>(`${BACKEND_URL}/data/entities`);
+  public getEntitiesRawData(): Observable<DataTableResponse> {
+    return this.http.get<DataTableResponse>(`${BACKEND_URL}/data/entities`);
   }
-  public getPartnersRawData(): Observable<ConnectionsResponseInterface> {
-    return this.http.get<ConnectionsResponseInterface>(`${BACKEND_URL}/data/partners`);
+  public getPartnersRawData(): Observable<DataTableResponse> {
+    return this.http.get<DataTableResponse>(`${BACKEND_URL}/data/partners`);
   }
 
   /** Top widgets data */
@@ -57,8 +57,8 @@ export class DataService {
 
 }
 
-export interface ConnectionsResponseInterface {
-  [key: string]: Connection;
+export interface DataTableResponse {
+  [key: string]: string;
 }
 
 export interface TopTransactionsEntityNamesResponse {
