@@ -70,12 +70,12 @@ export class PartnersUtils {
 // Mongodb schema definition
 const PartnersSchema = new Schema<PartnersSchema>({
     _id: String, // CID
-    clientName: String, // CNAME
-    clientType: String, // CADDRESSUSAGE
-    created: String, // CCREATED
-    lastModified: String, // CLASTMODIFIED
-    createdUser: String, // CCREATEUSER
-    lastUser: String, // CLASTUSER
+    clientName: { type: String, index: true, text: true }, // CNAME
+    clientType: { type: String, index: true, text: true }, // CADDRESSUSAGE
+    created: { type: String, index: true, text: true }, // CCREATED
+    lastModified: { type: String, index: true, text: true }, // CLASTMODIFIED
+    createdUser: { type: String, index: true, text: true }, // CCREATEUSER
+    lastUser: { type: String, index: true, text: true }, // CLASTUSER
 });
 
 // Export the data model

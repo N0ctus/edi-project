@@ -78,5 +78,14 @@ const transactionsSchema = new Schema<TransactionsSchema>({
     logPath: String, // BPIA_DRX_LOG_PATH
 });
 
+transactionsSchema.index({
+    'startTime': 'text',
+    'lastAction': 'text',
+    'documentName': 'text',
+    'transactionType': 'text',
+    'entityName': 'text',
+    'path': 'text',
+    'logPath': 'text',
+});
 // Export the data model
 export const Transaction = model<TransactionsSchema>('Transaction', transactionsSchema);

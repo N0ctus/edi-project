@@ -5,30 +5,149 @@ import { Entity } from "../models/Entities";
 import { Partner } from "../models/Partners";
 import { Transaction } from "../models/Transactions";
 
+const json2csv = require('json2csv').parse;
+
 const dataRouter = Router();
+
+Connection.syncIndexes();
+Transaction.syncIndexes({ '$**' : 'text' });
+Partner.syncIndexes();
+Entity.syncIndexes();
 
 /** Data table endpoints */
 // https://stackoverflow.com/questions/53518160/ag-grid-server-side-pagination-filter-sort-data
+
+dataRouter.get('/connections/count', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const q = req.query.q;
+
+  const query = Connection.find({});
+  query.exec((err, items) => {
+    const connectionsMap = {};
+
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            connectionsMap[item._id] = item;
+          }
+        }
+      } else {
+        connectionsMap[item._id] = item;
+      }
+    });
+
+    res.send({ count: Object.values(connectionsMap).length });
+  });
+});
+
+dataRouter.get('/transactions/count', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const q = req.query.q;
+
+  if (!q) {
+    const query = Transaction.count({});
+    query.exec((err, count) => {
+      res.send({ count });
+    });
+  } else {
+    /* const query = Transaction.find({});
+    query.exec((err, items) => {
+      const transactionsMap = {};
+
+      items.forEach((item) => {
+        if (q) {
+          const regx = new RegExp(q as string);
+          for (const key in item) {
+            if (regx.test(item[key])) {
+              transactionsMap[item._id] = item;
+            }
+          }
+        } else {
+          transactionsMap[item._id] = item;
+        }
+      });
+
+      res.send({ count: Object.values(transactionsMap).length });
+    }); */
+    const query = Transaction.find({ $text: { $search: q as string } }).count();
+    query.exec((err, count) => {
+      res.send({ count });
+    });
+  }
+});
+
+dataRouter.get('/entities/count', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const q = req.query.q;
+
+  const query = Entity.find({});
+  query.exec((err, items) => {
+    const entitiesMap = {};
+
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            entitiesMap[item._id] = item;
+          }
+        }
+      } else {
+        entitiesMap[item._id] = item;
+      }
+    });
+
+    res.send({ count: Object.values(entitiesMap).length });
+  });
+});
+
+dataRouter.get('/partners/count', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const q = req.query.q;
+
+  const query = Partner.find({});
+  query.exec((err, items) => {
+    const partnersMap = {};
+
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            partnersMap[item._id] = item;
+          }
+        }
+      } else {
+        partnersMap[item._id] = item;
+      }
+    });
+
+    res.send({ count: Object.values(partnersMap).length });
+  });
+});
+
 dataRouter.get('/connections', passport.authenticate('jwt', { session: false }), (req, res) => {
   // Access the provided 'page' and 'limit' query parameters
   const start = parseInt(req.query.start as string);
   const limit = parseInt(req.query.limit as string);
+  const q = req.query.q;
+
   const query = Connection.find({}).skip(start).limit(limit);
-  query.exec((err, item) => {
+  query.exec((err, items) => {
     const connectionsMap = {};
 
-    item.forEach((item) => {
-      connectionsMap[item._id] = item;
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            connectionsMap[item._id] = item;
+          }
+        }
+      } else {
+        connectionsMap[item._id] = item;
+      }
     });
 
     res.send(Object.values(connectionsMap));
-  });
-});
-
-dataRouter.get('/connections/count', passport.authenticate('jwt', { session: false }), (req, res) => {
-  const query = Connection.count({});
-  query.exec((err, count) => {
-    res.send({ count });
   });
 });
 
@@ -36,11 +155,22 @@ dataRouter.get('/transactions', passport.authenticate('jwt', { session: false })
   // Access the provided 'page' and 'limit' query parameters
   const start = parseInt(req.query.start as string);
   const limit = parseInt(req.query.limit as string);
-  const query = Transaction.find({}).skip(start).limit(limit);
-  query.exec((err, item) => {
+  const q = req.query.q;
+
+  let query;
+
+  if (q) {
+    const regx = new RegExp(q as string);
+    console.log(`${q}`)
+    query = Transaction.find({ $text: { $search: `${q}` } }).skip(start).limit(limit);
+  } else {
+    query = Transaction.find({}).skip(start).limit(limit);
+  }
+
+  query.exec((err, items) => {
     const transactionsMap = {};
 
-    item.forEach((item) => {
+    items.forEach((item) => {
       transactionsMap[item._id] = item;
     });
 
@@ -52,12 +182,23 @@ dataRouter.get('/entities', passport.authenticate('jwt', { session: false }), (r
   // Access the provided 'page' and 'limit' query parameters
   const start = parseInt(req.query.start as string);
   const limit = parseInt(req.query.limit as string);
+  const q = req.query.q;
+
   const query = Entity.find({}).skip(start).limit(limit);
-  query.exec((err, item) => {
+  query.exec((err, items) => {
     const entityMap = {};
 
-    item.forEach((item) => {
-      entityMap[item._id] = item;
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            entityMap[item._id] = item;
+          }
+        }
+      } else {
+        entityMap[item._id] = item;
+      }
     });
 
     res.send(Object.values(entityMap));
@@ -68,15 +209,26 @@ dataRouter.get('/partners', passport.authenticate('jwt', { session: false }), (r
   // Access the provided 'page' and 'limit' query parameters
   const start = parseInt(req.query.start as string);
   const limit = parseInt(req.query.limit as string);
-  const query = Partner.find({}).skip(start).limit(limit);
-  query.exec((err, item) => {
-    const entitiesMap = {};
+  const q = req.query.q;
 
-    item.forEach((item) => {
-      entitiesMap[item._id] = item;
+  const query = Partner.find({}).skip(start).limit(limit);
+  query.exec((err, items) => {
+    const partnersMap = {};
+
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            partnersMap[item._id] = item;
+          }
+        }
+      } else {
+        partnersMap[item._id] = item;
+      }
     });
 
-    res.send(Object.values(entitiesMap));
+    res.send(Object.values(partnersMap));
   });
 });
 
@@ -277,6 +429,131 @@ dataRouter.get('/transactions/top-entities', passport.authenticate('jwt', { sess
     });
   });
 });
+
+dataRouter.get('/connections/download', passport.authenticate('jwt', { session: false }), (req, res) => {
+
+  const q = req.query.q;
+
+  const query = Connection.find({});
+  query.exec((err, items) => {
+    const connectionsMap = {};
+
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            connectionsMap[item._id] = item;
+          }
+        }
+      } else {
+        connectionsMap[item._id] = item;
+      }
+    });
+
+    let arrayOfItems = Object.values(connectionsMap);
+    arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
+
+    const csvString = json2csv(arrayOfItems);
+    res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
+    res.set('Content-Type', 'text/csv');
+    res.status(200).send(csvString);
+  });
+});
+
+dataRouter.get('/transactions/download', passport.authenticate('jwt', { session: false }), (req, res) => {
+
+  const q = req.query.q;
+
+  const query = Transaction.find({}).select('-_id -__v');
+  query.exec((err, items) => {
+    const transactionsMap = {};
+
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            transactionsMap[item._id] = item;
+          }
+        }
+      } else {
+        transactionsMap[item._id] = item;
+      }
+    });
+
+    let arrayOfItems = Object.values(transactionsMap);
+    arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
+
+    const csvString = json2csv(arrayOfItems);
+    res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
+    res.set('Content-Type', 'text/csv');
+    res.status(200).send(csvString);
+  });
+});
+
+dataRouter.get('/entities/download', passport.authenticate('jwt', { session: false }), (req, res) => {
+
+  const q = req.query.q;
+
+  const query = Entity.find({}).select('-_id -__v');
+  query.exec((err, items) => {
+    const entitiesMap = {};
+
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            entitiesMap[item._id] = item;
+          }
+        }
+      } else {
+        entitiesMap[item._id] = item;
+      }
+    });
+
+    let arrayOfItems = Object.values(entitiesMap);
+    arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
+
+    const csvString = json2csv(arrayOfItems);
+    res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
+    res.set('Content-Type', 'text/csv');
+    res.status(200).send(csvString);
+  });
+});
+
+dataRouter.get('/partners/download', passport.authenticate('jwt', { session: false }), (req, res) => {
+
+  const q = req.query.q;
+
+  const query = Partner.find({}).select('-_id -__v');
+  query.exec((err, items) => {
+    const partnersMap = {};
+
+    items.forEach((item) => {
+      if (q) {
+        const regx = new RegExp(q as string);
+        for (const key in item) {
+          if (regx.test(item[key])) {
+            partnersMap[item._id] = item;
+          }
+        }
+      } else {
+        partnersMap[item._id] = item;
+      }
+    });
+
+    let arrayOfItems = Object.values(partnersMap);
+    arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
+
+    const csvString = json2csv(arrayOfItems);
+    res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
+    res.set('Content-Type', 'text/csv');
+    res.status(200).send(csvString);
+  });
+});
+
 
 
 export default dataRouter;

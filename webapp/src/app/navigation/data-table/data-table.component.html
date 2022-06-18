@@ -1,10 +1,27 @@
 <div class="container d-flex flex-column">
   <div class="jumbotron jumbotron-fluid my-4">
-    <div class="container">
-      <h1 class="display-4">Data table visualization</h1>
+    <div class="container d-flex align-items-center">
+      <div class="col-8">
+        <h1 class="display-4">Data table visualization</h1>
+      </div>
+      <div class="col-4">
+        <select class="form-select" aria-label="Data file type" (change)="openDataChangeAction($event)" [(ngModel)]="dataType">
+          <option selected disabled="disabled">Please select a type</option>
+          <option value="connections">Connections</option>
+          <option value="transactions">Transactions</option>
+          <option value="partners">Partners</option>
+          <option value="entities">Entities</option>
+        </select>
+      </div>
+    </div>
+    <div class="container d-flex">
+      <div class="input-group mt-3">
+        <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchQuery" (keydown.enter)="onSearchQuery()">
+        <button class="btn btn-outline-secondary" type="button" (click)="onSearchQuery()">Search</button>
+      </div>
     </div>
   </div>
-  <div class="mt-4 d-flex">
+  <div class="mt-4 d-flex" *ngIf="dataType">
     <ag-grid-angular
       [gridOptions]="gridOptions"
       style="min-height: 50vh"
@@ -13,5 +30,17 @@
       [columnDefs]="columnDefs"
     >
     </ag-grid-angular>
+  </div>
+  <div class="d-flex mt-4 align-items-center justify-content-between">
+    <div class="col-8">
+      <p class="d-flex align-items-center">
+        <i class="material-icons loading text-white" *ngIf="loadingSize || loadingData">restart_alt</i>&nbsp; You can input a keyword below and download the result as a CSV file.
+      </p>
+    </div>
+    <div class="col4">
+      <button type="button" class="d-flex align-items-center btn btn-primary btn-lg" (click)="startDownload()" [disabled]="!searchQuery || searchQuery.length === 0">
+        <span class="material-icons"> file_download </span>&nbsp; Download
+      </button>
+    </div>
   </div>
 </div>

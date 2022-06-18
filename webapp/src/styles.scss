@@ -113,6 +113,10 @@ $primaryDark: #53539d;
     color: #cacaca;
   }
 
+  .ag-theme-alpine .ag-paging-panel {
+    color: #cacaca;
+  }
+
   .progress {
     background: #444444;
   }
@@ -123,6 +127,11 @@ $primaryDark: #53539d;
     li {
       color: white;
     }
+  }
+  h1,
+  p,
+  li {
+    color: white;
   }
 
   highcharts-chart svg {

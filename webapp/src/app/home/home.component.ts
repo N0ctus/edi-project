@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NamePercentData } from './../models/NamePercentData.model';
 import { DataService } from './../services/data.service';
 
@@ -21,7 +22,8 @@ export class HomeComponent implements OnInit {
   public topMessagesExchange: Highcharts.Options | undefined;
 
   constructor(
-    private dataService: DataService
+    private dataService: DataService,
+    private router: Router,
   ) {
   }
 
@@ -41,6 +43,18 @@ export class HomeComponent implements OnInit {
       (rv[x[key]] = rv[x[key]] || []).push(x);
       return rv;
     }, {});
+  }
+
+  openDataAction(type: string) {
+    this.router.navigate(
+      ['/data-table'],
+      {
+        queryParams: {
+          type: type,
+        },
+        queryParamsHandling: 'merge'
+      }
+    )
   }
 
   /** Get charts data  */

@@ -129,3 +129,5 @@ export const PartnersDataTableColumnRefs = [
     field: 'lastUser'
   },
 ];
+
+export const DATA_TYPES = ['connections', 'entities', 'transactions', 'partners'];
