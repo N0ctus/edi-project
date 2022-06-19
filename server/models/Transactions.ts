@@ -78,6 +78,7 @@ const transactionsSchema = new Schema<TransactionsSchema>({
     logPath: String, // BPIA_DRX_LOG_PATH
 });
 
+// Setup the index types
 transactionsSchema.index({
     'startTime': 'text',
     'lastAction': 'text',

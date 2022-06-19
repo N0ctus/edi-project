@@ -35,6 +35,7 @@ process.on('message', (filesList: string[]) => {
                 console.log(`All data imported successfully `, data.length);
                 insertJobs = [];
                 readJobs = [];
+                Connection.syncIndexes({ '$**' : 'text' });
             }).catch(e => process.exit(1));
         });
     } else {

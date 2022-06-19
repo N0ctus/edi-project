@@ -33,6 +33,7 @@ process.on('message', (filesList: string[]) => {
         Promise.all(readJobs).then(data => {
             console.log(`All data imported successfully `, data.length);
             readJobs = [];
+            Entity.syncIndexes({ '$**' : 'text' });
         });
     } else {
         // Get the status of importing

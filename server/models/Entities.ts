@@ -84,17 +84,30 @@ export class EntitysUtils {
 // Mongodb schema definition
 const EntitySchema = new Schema<EntitySchema>({
     _id: String, // CID
-    entityClassReference: { type: String, index: true, text: true }, // CENTITYCLASSREF
-    clientName: { type: String, index: true, text: true }, // CNAME
-    comment: { type: String, index: true, text: true }, // CCOMMENT
-    created: { type: String, index: true, text: true }, // CCREATED
-    lastModified: { type: String, index: true, text: true }, // CLASTMODIFIED
-    createdUser: { type: String, index: true, text: true }, // CCREATEUSER
-    lastUser: { type: String, index: true, text: true }, // CLASTUSER
-    entityType: { type: String, index: true, text: true }, // CKEY
-    entityValue: { type: String, index: true, text: true }, // CVALUE
-    entityTypeName: { type: String, index: true, text: true }, // CTYPENAME
+    entityClassReference: String, // CENTITYCLASSREF
+    clientName: String, // CNAME
+    comment: String, // CCOMMENT
+    created: String, // CCREATED
+    lastModified: String, // CLASTMODIFIED
+    createdUser: String, // CCREATEUSER
+    lastUser: String, // CLASTUSER
+    entityType: String, // CKEY
+    entityValue: String, // CVALUE
+    entityTypeName: String, // CTYPENAME
 });
+
+EntitySchema.index({
+    'entityClassReference': 'text',
+    'clientName': 'text',
+    'comment': 'text',
+    'created': 'text',
+    'lastModified': 'text',
+    'createdUser': 'text',
+    'lastUser': 'text',
+    'entityType': 'text',
+    'entityValue': 'text',
+    'entityTypeName': 'text',
+})
 
 // Export the data model
 export const Entity = model<EntitySchema>('Entity', EntitySchema);

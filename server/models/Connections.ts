@@ -109,14 +109,24 @@ export class ConnectionsUtils {
 // Mongodb schema definition
 const connectionSchema = new Schema<ConnectionSchema>({
     _id: String, // CID
-    clientName: { type: String, index: true, text: true }, // CNAME
-    connectionType: { type: String, index: true, text: true }, // CDETAILSTYPE
-    comment: { type: String, index: true, text: true }, // CCOMMENT
-    creationDate: { type: String, index: true, text: true }, // CCREATED
-    lastModificationDate: { type: String, index: true, text: true }, // CLASTMODIFIED
-    createdUser: { type: String, index: true, text: true }, // CCREATEUSER
-    lastUser: { type: String, index: true, text: true }, // CLASTUSER
+    clientName: String, // CNAME
+    connectionType: String, // CDETAILSTYPE
+    comment: String, // CCOMMENT
+    creationDate: String, // CCREATED
+    lastModificationDate: String, // CLASTMODIFIED
+    createdUser: String, // CCREATEUSER
+    lastUser: String, // CLASTUSER
 });
 
+// Setup the index types
+connectionSchema.index({
+    'clientName': 'text',
+    'connectionType': 'text',
+    'comment': 'text',
+    'creationDate': 'text',
+    'lastModificationDate': 'text',
+    'createdUser': 'text',
+    'lastUser': 'text',
+});
 // Export the data model
 export const Connection = model<ConnectionSchema>('Connection', connectionSchema);

@@ -33,6 +33,7 @@ process.on('message', (filesList: string[]) => {
         Promise.all(readJobs).then(data => {
             console.log(`All data imported successfully `, data.length);
             readJobs = [];
+            // After an import batch, make sure to syn the indexes
             Transaction.syncIndexes({ '$**' : 'text' });
         });
     } else {

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Model } from "mongoose";
 import passport from "passport";
 import { Connection } from "../models/Connections";
 import { Entity } from "../models/Entities";
@@ -18,218 +19,35 @@ Entity.syncIndexes();
 // https://stackoverflow.com/questions/53518160/ag-grid-server-side-pagination-filter-sort-data
 
 dataRouter.get('/connections/count', passport.authenticate('jwt', { session: false }), (req, res) => {
-  const q = req.query.q;
-
-  const query = Connection.find({});
-  query.exec((err, items) => {
-    const connectionsMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            connectionsMap[item._id] = item;
-          }
-        }
-      } else {
-        connectionsMap[item._id] = item;
-      }
-    });
-
-    res.send({ count: Object.values(connectionsMap).length });
-  });
+  countTotalSearchQueryResults(req, res, Connection);
 });
 
 dataRouter.get('/transactions/count', passport.authenticate('jwt', { session: false }), (req, res) => {
-  const q = req.query.q;
-
-  if (!q) {
-    const query = Transaction.count({});
-    query.exec((err, count) => {
-      res.send({ count });
-    });
-  } else {
-    /* const query = Transaction.find({});
-    query.exec((err, items) => {
-      const transactionsMap = {};
-
-      items.forEach((item) => {
-        if (q) {
-          const regx = new RegExp(q as string);
-          for (const key in item) {
-            if (regx.test(item[key])) {
-              transactionsMap[item._id] = item;
-            }
-          }
-        } else {
-          transactionsMap[item._id] = item;
-        }
-      });
-
-      res.send({ count: Object.values(transactionsMap).length });
-    }); */
-    const query = Transaction.find({ $text: { $search: q as string } }).count();
-    query.exec((err, count) => {
-      res.send({ count });
-    });
-  }
+  countTotalSearchQueryResults(req, res, Transaction);
 });
 
 dataRouter.get('/entities/count', passport.authenticate('jwt', { session: false }), (req, res) => {
-  const q = req.query.q;
-
-  const query = Entity.find({});
-  query.exec((err, items) => {
-    const entitiesMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            entitiesMap[item._id] = item;
-          }
-        }
-      } else {
-        entitiesMap[item._id] = item;
-      }
-    });
-
-    res.send({ count: Object.values(entitiesMap).length });
-  });
+  countTotalSearchQueryResults(req, res, Entity);
 });
 
 dataRouter.get('/partners/count', passport.authenticate('jwt', { session: false }), (req, res) => {
-  const q = req.query.q;
-
-  const query = Partner.find({});
-  query.exec((err, items) => {
-    const partnersMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            partnersMap[item._id] = item;
-          }
-        }
-      } else {
-        partnersMap[item._id] = item;
-      }
-    });
-
-    res.send({ count: Object.values(partnersMap).length });
-  });
+  countTotalSearchQueryResults(req, res, Partner);
 });
 
 dataRouter.get('/connections', passport.authenticate('jwt', { session: false }), (req, res) => {
-  // Access the provided 'page' and 'limit' query parameters
-  const start = parseInt(req.query.start as string);
-  const limit = parseInt(req.query.limit as string);
-  const q = req.query.q;
-
-  const query = Connection.find({}).skip(start).limit(limit);
-  query.exec((err, items) => {
-    const connectionsMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            connectionsMap[item._id] = item;
-          }
-        }
-      } else {
-        connectionsMap[item._id] = item;
-      }
-    });
-
-    res.send(Object.values(connectionsMap));
-  });
+  searchInCollection(req, res, Connection);
 });
 
 dataRouter.get('/transactions', passport.authenticate('jwt', { session: false }), (req, res) => {
-  // Access the provided 'page' and 'limit' query parameters
-  const start = parseInt(req.query.start as string);
-  const limit = parseInt(req.query.limit as string);
-  const q = req.query.q;
-
-  let query;
-
-  if (q) {
-    const regx = new RegExp(q as string);
-    console.log(`${q}`)
-    query = Transaction.find({ $text: { $search: `${q}` } }).skip(start).limit(limit);
-  } else {
-    query = Transaction.find({}).skip(start).limit(limit);
-  }
-
-  query.exec((err, items) => {
-    const transactionsMap = {};
-
-    items.forEach((item) => {
-      transactionsMap[item._id] = item;
-    });
-
-    res.send(Object.values(transactionsMap));
-  });
+  searchInCollection(req, res, Transaction);
 });
 
 dataRouter.get('/entities', passport.authenticate('jwt', { session: false }), (req, res) => {
-  // Access the provided 'page' and 'limit' query parameters
-  const start = parseInt(req.query.start as string);
-  const limit = parseInt(req.query.limit as string);
-  const q = req.query.q;
-
-  const query = Entity.find({}).skip(start).limit(limit);
-  query.exec((err, items) => {
-    const entityMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            entityMap[item._id] = item;
-          }
-        }
-      } else {
-        entityMap[item._id] = item;
-      }
-    });
-
-    res.send(Object.values(entityMap));
-  });
+  searchInCollection(req, res, Entity);
 });
 
 dataRouter.get('/partners', passport.authenticate('jwt', { session: false }), (req, res) => {
-  // Access the provided 'page' and 'limit' query parameters
-  const start = parseInt(req.query.start as string);
-  const limit = parseInt(req.query.limit as string);
-  const q = req.query.q;
-
-  const query = Partner.find({}).skip(start).limit(limit);
-  query.exec((err, items) => {
-    const partnersMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            partnersMap[item._id] = item;
-          }
-        }
-      } else {
-        partnersMap[item._id] = item;
-      }
-    });
-
-    res.send(Object.values(partnersMap));
-  });
+  searchInCollection(req, res, Partner);
 });
 
 /** Chart endpoints */
@@ -554,6 +372,68 @@ dataRouter.get('/partners/download', passport.authenticate('jwt', { session: fal
   });
 });
 
+/**
+ * Search in a collection using the indexed text data if a q argument is passed
+ * in the request body
+ * @param req express request (contains start, limit and q)
+ * @param res express response
+ * @param model the model to search in
+ */
+function searchInCollection(req: any, res: any, model: Model<any>) {
+  // Access the provided 'page' and 'limit' query parameters
+  const start = parseInt(req.query.start as string);
+  const limit = parseInt(req.query.limit as string);
+  // Get the search query
+  const q = req.query.q;
 
+  let query;
+
+  if (q) {
+    query = model.find({ $text: { $search: `${q}` } }).skip(start).limit(limit);
+  } else {
+    query = model.find({}).skip(start).limit(limit);
+  }
+
+  query.exec((err, items) => {
+    if (err) {
+      res.send(err);
+    } else {
+      const itemsMap = {};
+
+      items.forEach((item) => {
+        itemsMap[item._id] = item;
+      });
+
+      res.send(Object.values(itemsMap));
+    }
+  });
+}
+
+/**
+ * Counts the number of total entries that match the searched keyword
+ * @param req
+ * @param res
+ * @param model
+ */
+function countTotalSearchQueryResults(req, res, model: Model<any>) {
+  // Get the search query
+  const q = req.query.q;
+
+  let query;
+
+  if (q) {
+    query = model.find({ $text: { $search: `${q}` } }).count();
+  } else {
+    query = model.find({}).count();
+  }
+
+  query.exec((err, count) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send({ count : count });
+    }
+  });
+}
 
 export default dataRouter;
