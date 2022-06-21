@@ -25,6 +25,15 @@ export class AuthService {
     return theme && theme === 'dark' ? true : false;
   }
 
+  public set username(username: string) {
+    localStorage.setItem('username', username);
+  }
+
+  public get username(): string {
+    const username = localStorage.getItem('username') as string;
+    return username;
+  }
+
 
   public login(email: string, password: string) {
     return this.http.post<UserAuthResponse>('http://localhost:3000/auth/login', {}, { params: { 'username': email, 'password': password } })

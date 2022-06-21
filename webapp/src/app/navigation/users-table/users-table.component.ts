@@ -23,12 +23,16 @@ export class UsersTableComponent implements OnInit {
       cellRendererParams: {
         clicked: (field: string) => {
           const user = this.rowData.find(u => u.id === field);
-          const hasConfirmed = confirm(`Do you really want to delete user ${user?.username} ?`);
-          if (hasConfirmed) {
-            this.usersService.deleteUser(user?.id as string).subscribe((r) => {
-              alert(r?.message);
-              this.getUsersData();
-            });
+          if (user?.username === 'admin') {
+            alert('You cannot delete the admin!');
+          } else {
+            const hasConfirmed = confirm(`Do you really want to delete user ${user?.username} ?`);
+            if (hasConfirmed) {
+              this.usersService.deleteUser(user?.id as string).subscribe((r) => {
+                alert(r?.message);
+                this.getUsersData();
+              });
+            }
           }
         },
       },

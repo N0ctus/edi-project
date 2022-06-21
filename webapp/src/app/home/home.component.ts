@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 import { NamePercentData } from './../models/NamePercentData.model';
 import { DataService } from './../services/data.service';
 
@@ -21,9 +22,14 @@ export class HomeComponent implements OnInit {
   public errors: Highcharts.Options | undefined;
   public topMessagesExchange: Highcharts.Options | undefined;
 
+  public get username() {
+    return this.auth.username;
+  }
+
   constructor(
     private dataService: DataService,
     private router: Router,
+    private auth: AuthService,
   ) {
   }
 

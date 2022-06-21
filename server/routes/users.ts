@@ -32,6 +32,10 @@ usersRouter.post('/new', passport.authenticate('jwt', { session: false }), (req,
 });
 
 usersRouter.delete('/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  if ((req.user as any).username === 'admin') {
+    res.status(403).send('Action forbidden, you cannot delete the app admin!');
+  }
+  debugger;
   if ((req?.user as any).admin) {
     const userToDelete = await UserModel.findById(req.params.id);
     if (userToDelete) {
