@@ -114,6 +114,9 @@ export class HomeComponent implements OnInit {
           title: {
             text: 'Entity class types'
           },
+          credits: {
+            enabled: false
+          },
           accessibility: {
             point: {
               valueSuffix: '%'
@@ -147,6 +150,9 @@ export class HomeComponent implements OnInit {
           },
           title: {
             text: 'Entity class types'
+          },
+          credits: {
+            enabled: false
           },
           accessibility: {
             point: {
@@ -187,6 +193,9 @@ export class HomeComponent implements OnInit {
           title: {
             text: 'Protocol per connection log'
           },
+          credits: {
+            enabled: false
+          },
           accessibility: {
             point: {
               valueSuffix: '%'
@@ -220,6 +229,9 @@ export class HomeComponent implements OnInit {
           },
           title: {
             text: 'Protocol per connection log'
+          },
+          credits: {
+            enabled: false
           },
           accessibility: {
             point: {
