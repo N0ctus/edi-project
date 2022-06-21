@@ -249,127 +249,19 @@ dataRouter.get('/transactions/top-entities', passport.authenticate('jwt', { sess
 });
 
 dataRouter.get('/connections/download', passport.authenticate('jwt', { session: false }), (req, res) => {
-
-  const q = req.query.q;
-
-  const query = Connection.find({});
-  query.exec((err, items) => {
-    const connectionsMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            connectionsMap[item._id] = item;
-          }
-        }
-      } else {
-        connectionsMap[item._id] = item;
-      }
-    });
-
-    let arrayOfItems = Object.values(connectionsMap);
-    arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
-
-    const csvString = json2csv(arrayOfItems);
-    res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
-    res.set('Content-Type', 'text/csv');
-    res.status(200).send(csvString);
-  });
+  exportCollection(req, res, Connection);
 });
 
 dataRouter.get('/transactions/download', passport.authenticate('jwt', { session: false }), (req, res) => {
-
-  const q = req.query.q;
-
-  const query = Transaction.find({}).select('-_id -__v');
-  query.exec((err, items) => {
-    const transactionsMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            transactionsMap[item._id] = item;
-          }
-        }
-      } else {
-        transactionsMap[item._id] = item;
-      }
-    });
-
-    let arrayOfItems = Object.values(transactionsMap);
-    arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
-
-    const csvString = json2csv(arrayOfItems);
-    res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
-    res.set('Content-Type', 'text/csv');
-    res.status(200).send(csvString);
-  });
+  exportCollection(req, res, Transaction);
 });
 
 dataRouter.get('/entities/download', passport.authenticate('jwt', { session: false }), (req, res) => {
-
-  const q = req.query.q;
-
-  const query = Entity.find({}).select('-_id -__v');
-  query.exec((err, items) => {
-    const entitiesMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            entitiesMap[item._id] = item;
-          }
-        }
-      } else {
-        entitiesMap[item._id] = item;
-      }
-    });
-
-    let arrayOfItems = Object.values(entitiesMap);
-    arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
-
-    const csvString = json2csv(arrayOfItems);
-    res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
-    res.set('Content-Type', 'text/csv');
-    res.status(200).send(csvString);
-  });
+  exportCollection(req, res, Entity);
 });
 
 dataRouter.get('/partners/download', passport.authenticate('jwt', { session: false }), (req, res) => {
-
-  const q = req.query.q;
-
-  const query = Partner.find({}).select('-_id -__v');
-  query.exec((err, items) => {
-    const partnersMap = {};
-
-    items.forEach((item) => {
-      if (q) {
-        const regx = new RegExp(q as string);
-        for (const key in item) {
-          if (regx.test(item[key])) {
-            partnersMap[item._id] = item;
-          }
-        }
-      } else {
-        partnersMap[item._id] = item;
-      }
-    });
-
-    let arrayOfItems = Object.values(partnersMap);
-    arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
-
-    const csvString = json2csv(arrayOfItems);
-    res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
-    res.set('Content-Type', 'text/csv');
-    res.status(200).send(csvString);
-  });
+  exportCollection(req, res, Partner);
 });
 
 /**
@@ -405,6 +297,45 @@ function searchInCollection(req: any, res: any, model: Model<any>) {
       });
 
       res.send(Object.values(itemsMap));
+    }
+  });
+}
+
+/**
+ * Export a collection filtred by a wyert
+ * @param req express request (contains start, limit and q)
+ * @param res express response
+ * @param model the model to search in
+ */
+function exportCollection(req: any, res: any, model: Model<any>) {
+  // Get the search query
+  const q = req.query.q;
+
+  let query;
+
+  if (q) {
+    query = model.find({ $text: { $search: `${q}` } });
+  } else {
+    query = model.find({});
+  }
+
+  query.exec((err, items) => {
+    if (err) {
+      res.send(err);
+    } else {
+      const itemsMap = {};
+
+      items.forEach((item) => {
+        itemsMap[item._id] = item;
+      });
+
+      let arrayOfItems = Object.values(itemsMap);
+      arrayOfItems = arrayOfItems.map((el: any) => el.toJSON());
+
+      const csvString = json2csv(arrayOfItems);
+      res.setHeader('Content-disposition', 'attachment; filename=shifts-report.csv');
+      res.set('Content-Type', 'text/csv');
+      res.status(200).send(csvString);
     }
   });
 }
